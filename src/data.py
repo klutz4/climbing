@@ -34,8 +34,8 @@ drop_cols = ['best_area','worst_area','guide_area','climb_try','repeat','yellow_
 climb.drop(drop_cols, axis=1, inplace = True)
 
 #convert kg to lbs for weight, cm to in for height
-climb['weight'] = round(climb['weight'] * 2.20462,3)
-climb['height'] = round(climb['height'] / 2.54,3)
+climb['weight'] = round(climb['weight'] * 2.20462, 3)
+climb['height'] = round(climb['height'] / 2.54, 3)
 
 #convert birth to datetime, add new column with age
 climb.birth = climb.birth.str.replace('-','')
