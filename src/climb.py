@@ -26,12 +26,12 @@ for grade in grades:
 climb = climb[(climb['usa_boulders'] != 'VB')]
 
 #remove columns that aren't needed
-drop_cols = ['best_area','worst_area','guide_area','climb_try','repeat','yellow_id','user_recommended','comment','last_year','competitions','raw_notes','shorthand','exclude_from_ranking','score','total_score']
+drop_cols = ['best_area','worst_area','guide_area','climb_try','repeat','yellow_id','user_recommended','comment','last_year','competitions','raw_notes','shorthand','exclude_from_ranking','score','total_score','deactivated','occupation','birth_city','birth_country']
 climb.drop(drop_cols, axis=1, inplace = True)
 
 #convert kg to lbs for weight, cm to in for height
-climb['weight'] = climb['weight'] * 2.20462
-climb['height'] = climb['height'] / 2.54
+climb['weight'] = round(climb['weight'] * 2.20462,3)
+climb['height'] = round(climb['height'] / 2.54,3)
 
 #convert birth to datetime, add new column with age
 climb.birth = climb.birth.str.replace('-','')
@@ -63,5 +63,30 @@ for i in range(4,10):
 #lower case applied to all strings in df
 climb = pd.concat([climb[col].astype(str).str.lower() for col in climb.columns],axis=1)
 
-#started column only has year
 #make sponsored (1 or 0) column
+sponsors = ['sponsor1','sponsor2','sponsor3']
+for col in sponsors:
+    climb[col].replace('nan',0, inplace=True)
+
+for col in sponsors:
+    for item in climb[col].unique():
+        if item != 0:
+            climb[col].replace(item,1,inplace=True)
+
+climb['sponsored'] = climb[['sponsor1','sponsor2','sponsor3']].max(axis=1)
+climb.drop(sponsors, axis=1, inplace=True)
+
+climb.drop('Unnamed: 0',axis=1,inplace=True)
+
+cols = ['rating', 'chipped','usa_routes', 'height', 'weight', 'age','user_id', 'grade_id', 'method_id', 'climb_type','sex','started', 'year','crag_id', 'sector_id']
+for col in cols:
+    climb[col] = pd.to_numeric(climb[col])
+
+#split df into routes and boulders
+routes = climb.copy()
+routes = routes.loc[climb['climb_type'] == 0]
+routes.drop('usa_boulders',axis=1, inplace=True)
+
+boulders = climb.copy()
+boulders = boulders.loc[climb['climb_type'] == 1]
+boulders.drop('usa_routes',axis=1, inplace=True)
