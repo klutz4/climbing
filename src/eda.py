@@ -27,17 +27,17 @@ def plot_routes():
     plt.savefig('images/routes_per_gender.png')
     plt.clf()
 
+def routes_scatter(col,filename):
     fig2 = plt.figure(figsize=(15,8))
     ax2 = fig2.add_subplot(111)
-    # ax2.set_ylim(5.00,5.20)
-    ax2.scatter(x=routes.age,y=routes.usa_routes,color='green',alpha=0.5)
+    ax2.scatter(x=routes[col],y=routes.usa_routes,color='green',alpha=0.5)
     start, end = ax2.get_ylim()
     ax2.yaxis.set_ticks(np.arange(start, end, .01))
     ax2.set_yticklabels([0,'5.4','5.5','5.6','5.7','5.8','5.9','5.10a','5.11a','5.12a','5.13a','5.14a','5.15a'])
-    ax2.set_xlabel('Age')
+    ax2.set_xlabel(col)
     ax2.set_ylabel('Route grade')
-    ax2.set_title('Routes per Age')
-    plt.savefig('images/routes_per_age.png')
+    ax2.set_title('Routes per {}'.format(col))
+    plt.savefig(filename)
     plt.clf()
 
 def plot_boulders():
@@ -49,14 +49,15 @@ def plot_boulders():
     plt.savefig('images/boulders_per_gender.png')
     plt.clf()
 
+def boulders_scatter(col,filename):
     fig = plt.figure(figsize=(15,8))
     ax = fig.add_subplot(111)
-    ax.scatter(x=boulders.age,y=boulders.usa_boulders,color='green',alpha=0.5)
+    ax.scatter(x=boulders[col],y=boulders.usa_boulders,color='green',alpha=0.5)
     start, end = ax.get_ylim()
     ax.yaxis.set_ticks(np.arange(start, end, 1))
     ax.set_yticklabels(('V0','V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11','V12','V13','V14','V15','V16'))
-    ax.set_xlabel('Age')
+    ax.set_xlabel(col)
     ax.set_ylabel('Boulder grade')
-    ax.set_title('Boulders per Age')
-    plt.savefig('images/boulders_per_age.png')
+    ax.set_title('Boulders per {}'.format(col))
+    plt.savefig(filename)
     plt.clf()

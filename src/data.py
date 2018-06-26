@@ -38,6 +38,11 @@ strings = ['notes','crag','sector','climb_country','method','climb_name']
 for col in strings:
     climb[col] = climb[col].astype(str).str.lower()
 
+#convert columns to numeric
+cols = ['rating', 'chipped', 'height', 'weight','user_id', 'grade_id', 'method_id', 'climb_type','sex','started', 'year','crag_id', 'sector_id']
+for col in cols:
+    climb[col] = pd.to_numeric(climb[col])
+
 #convert kg to lbs for weight, cm to in for height
 climb['weight'] = round(climb['weight'] * 2.20462, 3)
 climb['height'] = round(climb['height'] / 2.54, 3)
@@ -77,10 +82,6 @@ climb['sponsored'] = climb[['sponsor1','sponsor2','sponsor3']].max(axis=1)
 climb.drop(sponsors, axis=1, inplace=True)
 
 climb.drop('Unnamed: 0',axis=1,inplace=True)
-
-cols = ['rating', 'chipped', 'height', 'weight', 'age','user_id', 'grade_id', 'method_id', 'climb_type','sex','started', 'year','crag_id', 'sector_id']
-for col in cols:
-    climb[col] = pd.to_numeric(climb[col])
 
 #create routes df
 routes = climb.copy()
