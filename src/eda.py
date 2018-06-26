@@ -65,5 +65,10 @@ def boulders_scatter(col,filename):
     plt.clf()
 
 
-boulder_grades = boulders.groupby('usa_boulders')
-route_grades = routes.groupby('usa_routes')
+def get_mean_ages(df,col):
+    grades = df.groupby(col)
+    mean_ages = round(grades.ascent_age.mean(),2)
+    return mean_ages
+
+boulder_mean_ages = get_mean_ages(boulders,'usa_boulders')
+route_mean_ages = get_mean_ages(routes,'usa_routes')
