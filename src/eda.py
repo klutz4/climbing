@@ -15,6 +15,8 @@ mpl.rcParams.update({
 
 boulders = pd.read_csv('/Users/Kelly/galvanize/capstones/mod1/data/boulders.csv')
 routes = pd.read_csv('/Users/Kelly/galvanize/capstones/mod1/data/routes.csv')
+for df in [routes,boulders]:
+    df.drop('Unnamed: 0',axis=1,inplace=True)
 
 def plot_routes():
     rpg = sns.countplot(x='usa_routes', hue ='sex', data=routes)
