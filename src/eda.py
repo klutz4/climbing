@@ -10,7 +10,7 @@ mpl.rcParams.update({
     'axes.labelsize'      : 'medium',
     'xtick.labelsize'     : 'small',
     'ytick.labelsize'     : 'small',
-    'legend.fontsize'     : 'large',
+    'legend.fontsize'     : 'medium',
 })
 
 boulders = pd.read_csv('/Users/Kelly/galvanize/capstones/mod1/data/boulders.csv')
@@ -27,7 +27,19 @@ def plot_routes():
     plt.savefig('images/routes_per_gender.png')
     plt.clf()
 
-
+    fig2 = plt.figure(figsize=(15,8))
+    ax2 = fig2.add_subplot(111)
+    # ax2.set_ylim(5.00,5.20)
+    ax2.scatter(x=routes.age,y=routes.usa_routes,color='green',alpha=0.5)
+    start, end = ax2.get_ylim()
+    ax2.yaxis.set_ticks(np.arange(start, end, .01))
+    ax2.set_yticklabels([0,'5.4','5.5','5.6','5.7','5.8','5.9','5.10a','5.11a','5.12a','5.13a','5.14a','5.15a'])
+    ax2.set_xlabel('Age')
+    ax2.set_ylabel('Route grade')
+    ax2.set_title('Routes per Age')
+    plt.savefig('images/routes_per_age.png')
+    plt.clf()
+    
 def plot_boulders():
     bpg = sns.countplot(x='usa_boulders', hue = 'sex', data=boulders)
     handles, _ = bpg.get_legend_handles_labels()
@@ -38,12 +50,14 @@ def plot_boulders():
     plt.clf()
 
 
-fig = plt.figure(figsize=(15,8))
-ax = fig.add_subplot(111)
-ax.set_xlim(-1,17)
-ax.scatter(x=boulders.usa_boulders.values,y=boulders.age.values,color='green',alpha=0.5)
-ax.set_xticklabels(['V0','V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11','V12','V13','V14','V15','V16'])
-ax.set_ylabel('Age')
-ax.set_xlabel('Boulder grade')
-ax.set_title('Boulders per Age')
-plt.show()
+    fig = plt.figure(figsize=(15,8))
+    ax = fig.add_subplot(111)
+    ax.scatter(x=boulders.age,y=boulders.usa_boulders,color='green',alpha=0.5)
+    start, end = ax.get_ylim()
+    ax.yaxis.set_ticks(np.arange(start, end, 1))
+    ax.set_yticklabels(('V0','V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11','V12','V13','V14','V15','V16'))
+    ax.set_xlabel('Age')
+    ax.set_ylabel('Boulder grade')
+    ax.set_title('Boulders per Age')
+    plt.savefig('images/boulders_per_age.png')
+    plt.clf()
