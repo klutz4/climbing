@@ -65,7 +65,7 @@ def boulders_scatter(col,filename):
     plt.clf()
 
 def get_means(df,col1,col2):
-    grades = df.groupby(col1)
+    grades = df.groupby([col1,'sex'])
     means = round(grades[col2].mean(),2)
     return means
 
