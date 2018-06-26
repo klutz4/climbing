@@ -25,10 +25,6 @@ r_grades = ['3/4','5.1','5.3']
 for grade in r_grades:
     climb = climb[(climb['usa_routes'] != grade)]
 
-b_grades = ['VB','V8/9','V5/V6','V4/V5','V3/4']
-for grade in b_grades:
-    climb = climb[(climb['usa_boulders'] != grade)]
-
 #remove columns that aren't needed
 drop_cols = ['best_area','worst_area','guide_area','climb_try','repeat','yellow_id','user_recommended','comment','last_year','competitions','raw_notes','shorthand','exclude_from_ranking','score','total_score','deactivated','occupation','birth_city','birth_country']
 climb.drop(drop_cols, axis=1, inplace = True)
@@ -121,6 +117,10 @@ for col in dates:
 boulders = climb.copy()
 boulders = boulders.loc[climb['climb_type'] == 1]
 boulders.drop('usa_routes',axis=1, inplace=True)
+
+b_grades = ['VB','V8/9','V5/V6','V4/V5','V3/4']
+for grade in b_grades:
+    boulders = boulders[(boulders['usa_boulders'] != grade)]
 
 #convert usa_boulders to all numbers (remove V) - need to deal with /
 for i in range(0,19):
