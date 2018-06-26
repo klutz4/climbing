@@ -33,6 +33,11 @@ for grade in b_grades:
 drop_cols = ['best_area','worst_area','guide_area','climb_try','repeat','yellow_id','user_recommended','comment','last_year','competitions','raw_notes','shorthand','exclude_from_ranking','score','total_score','deactivated','occupation','birth_city','birth_country']
 climb.drop(drop_cols, axis=1, inplace = True)
 
+#lower case applied to all strings in df
+strings = ['notes','crag','sector','climb_country','method','climb_name']
+for col in strings:
+    climb[col] = climb[col].astype(str).str.lower()
+
 #convert kg to lbs for weight, cm to in for height
 climb['weight'] = round(climb['weight'] * 2.20462, 3)
 climb['height'] = round(climb['height'] / 2.54, 3)
@@ -44,6 +49,7 @@ climb.birth = pd.to_datetime(climb['birth'], format='%Y%m%d')
 now = pd.Timestamp(DT.datetime.now())
 climb['birth'] = climb['birth'].where(climb['birth'] < now, climb['birth'] -  np.timedelta64(100, 'Y'))
 climb['age'] = (now - climb['birth']).astype('<m8[Y]')
+climb = climb[(climb['age'] > 15)]
 
 #convert columns with dates into datetime
 climb.rec_date = pd.to_datetime(climb.rec_date, unit='s')
@@ -53,8 +59,9 @@ climb['date'] = climb['date'].apply(lambda x: x.date())
 climb.project_ascent_date = pd.to_datetime(climb.project_ascent_date, unit='s')
 climb['project_ascent_date'] = climb['project_ascent_date'].apply(lambda x: x.date())
 
-#lower case applied to all strings in df
-climb = pd.concat([climb[col].astype(str).str.lower() for col in climb.columns],axis=1)
+dates = ['rec_date','date','project_ascent_date','birth']
+for col in dates:
+    climb[col] = climb[col].astype('datetime64')
 
 #make sponsored (1 or 0) column
 sponsors = ['sponsor1','sponsor2','sponsor3']
@@ -75,7 +82,7 @@ cols = ['rating', 'chipped', 'height', 'weight', 'age','user_id', 'grade_id', 'm
 for col in cols:
     climb[col] = pd.to_numeric(climb[col])
 
-#split df into routes and boulders
+#create routes df
 routes = climb.copy()
 routes = routes.loc[climb['climb_type'] == 0]
 routes.drop('usa_boulders',axis=1, inplace=True)
@@ -87,14 +94,17 @@ for i in range(10,16):
         routes.usa_routes.replace('5.{}{}'.format(i,key),'5.{}{}'.format(i,grade_dict.get(key)),inplace=True)
 for i in range(4,10):
         routes.usa_routes.replace('5.{}'.format(i),'5.0{}'.format(i),inplace=True)
+routes['usa_routes'] = pd.to_numeric(routes['usa_routes'])
 
+#create boulders df
 boulders = climb.copy()
 boulders = boulders.loc[climb['climb_type'] == 1]
 boulders.drop('usa_routes',axis=1, inplace=True)
 
 #convert usa_boulders to all numbers (remove V) - need to deal with /
 for i in range(0,19):
-    boulders.usa_boulders.replace('v{}'.format(i), '{}'.format(i), inplace=True)
+    boulders.usa_boulders.replace('V{}'.format(i), '{}'.format(i), inplace=True)
+boulders['usa_boulders'] = pd.to_numeric(boulders['usa_boulders'])
 
 boulders.to_csv('/Users/Kelly/galvanize/capstones/mod1/data/boulders.csv')
 routes.to_csv('/Users/Kelly/galvanize/capstones/mod1/data/routes.csv')
