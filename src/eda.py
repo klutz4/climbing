@@ -39,7 +39,7 @@ def plot_routes():
     ax2.set_title('Routes per Age')
     plt.savefig('images/routes_per_age.png')
     plt.clf()
-    
+
 def plot_boulders():
     bpg = sns.countplot(x='usa_boulders', hue = 'sex', data=boulders)
     handles, _ = bpg.get_legend_handles_labels()
@@ -48,7 +48,6 @@ def plot_boulders():
     bpg.set_title('Boulders per Gender')
     plt.savefig('images/boulders_per_gender.png')
     plt.clf()
-
 
     fig = plt.figure(figsize=(15,8))
     ax = fig.add_subplot(111)
