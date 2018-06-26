@@ -72,7 +72,7 @@ climb['project_ascent_date'] = climb['project_ascent_date'].apply(lambda x: x.da
 dates = ['rec_date','date','project_ascent_date','birth']
 for col in dates:
     climb[col] = climb[col].astype('datetime64')
-
+    
 #split dates into month, day
 climb['rec_year'] = climb.rec_date.dt.year
 climb['rec_month'] = climb.rec_date.dt.month
@@ -110,6 +110,10 @@ for i in range(4,10):
         routes.usa_routes.replace('5.{}'.format(i),'5.0{}'.format(i),inplace=True)
 routes['usa_routes'] = pd.to_numeric(routes['usa_routes'])
 
+dates = ['rec_date','date','project_ascent_date','birth']
+for col in dates:
+    routes[col] = routes[col].astype('datetime64')
+
 #create boulders df
 boulders = climb.copy()
 boulders = boulders.loc[climb['climb_type'] == 1]
@@ -119,6 +123,10 @@ boulders.drop('usa_routes',axis=1, inplace=True)
 for i in range(0,19):
     boulders.usa_boulders.replace('V{}'.format(i), '{}'.format(i), inplace=True)
 boulders['usa_boulders'] = pd.to_numeric(boulders['usa_boulders'])
+
+dates = ['rec_date','date','project_ascent_date','birth']
+for col in dates:
+    boulders[col] = boulders[col].astype('datetime64')
 
 boulders.to_csv('/Users/Kelly/galvanize/capstones/mod1/data/boulders.csv')
 routes.to_csv('/Users/Kelly/galvanize/capstones/mod1/data/routes.csv')
