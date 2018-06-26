@@ -36,6 +36,7 @@ climb.drop(drop_cols, axis=1, inplace = True)
 #convert kg to lbs for weight, cm to in for height
 climb['weight'] = round(climb['weight'] * 2.20462, 3)
 climb['height'] = round(climb['height'] / 2.54, 3)
+climb = climb[(climb['height'] > 57) & (climb['height'] < 84)]
 
 #convert birth to datetime, add new column with age
 climb.birth = climb.birth.str.replace('-','')
