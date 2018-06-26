@@ -57,7 +57,7 @@ climb['birth'] = climb['birth'].where(climb['birth'] < now, climb['birth'] -  np
 climb['current_age'] = (now - climb['birth']).astype('<m8[Y]')
 climb = climb[(climb['current_age'] > 15)]
 
-#convert columns with dates into datetime
+#convert columns with dates into datetime and add ascent age column
 climb.rec_date = pd.to_datetime(climb.rec_date, unit='s')
 # climb['rec_date'] = climb['rec_date'].apply(lambda x: x.date())
 climb['rec_date'] = climb['rec_date'].where(climb['rec_date'] < now, climb['rec_date'] -  np.timedelta64(100, 'Y'))
@@ -72,7 +72,7 @@ climb['project_ascent_date'] = climb['project_ascent_date'].apply(lambda x: x.da
 dates = ['rec_date','date','project_ascent_date','birth']
 for col in dates:
     climb[col] = climb[col].astype('datetime64')
-    
+
 #split dates into month, day
 climb['rec_year'] = climb.rec_date.dt.year
 climb['rec_month'] = climb.rec_date.dt.month
@@ -80,6 +80,9 @@ climb['rec_day'] = climb.rec_date.dt.day
 climb['project_ascent_year'] = climb.project_ascent_date.dt.year
 climb['project_ascent_month'] = climb.project_ascent_date.dt.month
 climb['project_ascent_day'] = climb.project_ascent_date.dt.day
+
+#add time to complete proj column
+climb['time_to_send'] = (climb['rec_year'] - climb['started'])
 
 #make sponsored (1 or 0) column
 sponsors = ['sponsor1','sponsor2','sponsor3']

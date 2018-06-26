@@ -63,3 +63,7 @@ def boulders_scatter(col,filename):
     ax.set_title('Boulders per {}'.format(col))
     plt.savefig(filename)
     plt.clf()
+
+
+boulder_grades = boulders.groupby('usa_boulders')
+route_grades = routes.groupby('usa_routes')
