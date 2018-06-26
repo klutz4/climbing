@@ -26,7 +26,7 @@ for grade in r_grades:
     climb = climb[(climb['usa_routes'] != grade)]
 
 #remove columns that aren't needed
-drop_cols = ['best_area','worst_area','guide_area','climb_try','repeat','yellow_id','user_recommended','comment','last_year','competitions','raw_notes','shorthand','exclude_from_ranking','score','total_score','deactivated','occupation','birth_city','birth_country']
+drop_cols = ['best_area','worst_area','guide_area','climb_try','repeat','yellow_id','user_recommended','comment','last_year','competitions','raw_notes','shorthand','exclude_from_ranking','score','total_score','deactivated','occupation','birth_city','birth_country','rec_date','project_ascent_date']
 climb.drop(drop_cols, axis=1, inplace = True)
 
 #lower case applied to all strings in df
@@ -54,31 +54,24 @@ climb['current_age'] = (now - climb['birth']).astype('<m8[Y]')
 climb = climb[(climb['current_age'] > 15)]
 
 #convert columns with dates into datetime and add ascent age column
-climb.rec_date = pd.to_datetime(climb.rec_date, unit='s')
-# climb['rec_date'] = climb['rec_date'].apply(lambda x: x.date())
-climb['rec_date'] = climb['rec_date'].where(climb['rec_date'] < now, climb['rec_date'] -  np.timedelta64(100, 'Y'))
-climb['ascent_age'] = (climb['rec_date'] - climb['birth']).astype('<m8[Y]')
+climb.date = pd.to_datetime(climb.date, unit='s')
+climb['ascent_date'] = climb['date']
+# climb['date'] = climb['date'].apply(lambda x: x.date())
+climb['ascent_date'] = climb['ascent_date'].where(climb['ascent_date'] < now, climb['ascent_date'] -  np.timedelta64(100, 'Y'))
+climb['ascent_age'] = (climb['ascent_date'] - climb['birth']).astype('<m8[Y]')
 climb = climb[(climb['ascent_age'] > 15)]
 
-climb.date = pd.to_datetime(climb.date, unit='s')
-climb['date'] = climb['date'].apply(lambda x: x.date())
-climb.project_ascent_date = pd.to_datetime(climb.project_ascent_date, unit='s')
-climb['project_ascent_date'] = climb['project_ascent_date'].apply(lambda x: x.date())
-
-dates = ['rec_date','date','project_ascent_date','birth']
+dates = ['date','birth']
 for col in dates:
     climb[col] = climb[col].astype('datetime64')
 
 #split dates into month, day
-climb['rec_year'] = climb.rec_date.dt.year
-climb['rec_month'] = climb.rec_date.dt.month
-climb['rec_day'] = climb.rec_date.dt.day
-climb['project_ascent_year'] = climb.project_ascent_date.dt.year
-climb['project_ascent_month'] = climb.project_ascent_date.dt.month
-climb['project_ascent_day'] = climb.project_ascent_date.dt.day
+climb['ascent_date_year'] = climb.ascent_date.dt.year
+climb['ascent_date_month'] = climb.ascent_date.dt.month
+climb['ascent_date_day'] = climb.ascent_date.dt.day
 
 #add time to complete proj column
-climb['time_to_send'] = (climb['rec_year'] - climb['started'])
+climb['time_to_send'] = (climb['ascent_date_year'] - climb['started'])
 
 #make sponsored (1 or 0) column
 sponsors = ['sponsor1','sponsor2','sponsor3']
@@ -109,7 +102,7 @@ for i in range(4,10):
         routes.usa_routes.replace('5.{}'.format(i),'5.0{}'.format(i),inplace=True)
 routes['usa_routes'] = pd.to_numeric(routes['usa_routes'])
 
-dates = ['rec_date','date','project_ascent_date','birth']
+dates = ['ascent_date','birth']
 for col in dates:
     routes[col] = routes[col].astype('datetime64')
 
@@ -127,7 +120,7 @@ for i in range(0,19):
     boulders.usa_boulders.replace('V{}'.format(i), '{}'.format(i), inplace=True)
 boulders['usa_boulders'] = pd.to_numeric(boulders['usa_boulders'])
 
-dates = ['rec_date','date','project_ascent_date','birth']
+dates = ['ascent_date','birth']
 for col in dates:
     boulders[col] = boulders[col].astype('datetime64')
 

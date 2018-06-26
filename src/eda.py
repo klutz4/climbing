@@ -64,13 +64,15 @@ def boulders_scatter(col,filename):
     plt.savefig(filename)
     plt.clf()
 
-def get_mean_ages(df,col):
-    grades = df.groupby(col)
-    mean_ages = round(grades.ascent_age.mean(),2)
-    return mean_ages
+def get_means(df,col1,col2):
+    grades = df.groupby(col1)
+    means = round(grades[col2].mean(),2)
+    return means
 
-boulder_mean_ages = get_mean_ages(boulders,'usa_boulders')
-route_mean_ages = get_mean_ages(routes,'usa_routes')
+boulder_mean_ages = get_means(boulders,'usa_boulders','ascent_age')
+route_mean_ages = get_means(routes,'usa_routes','ascent_age')
+boulder_mean_times = get_means(boulders,'usa_boulders','time_to_send')
+route_mean_times = get_means(routes,'usa_routes','time_to_send')
 
 def main():
     plot_routes()
