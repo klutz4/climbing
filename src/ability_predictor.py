@@ -20,11 +20,12 @@ def drop_columns_ability():
     return df
 
 def split_data_ability(df,col, sample_num):
+    #sample num = 7200 for boulders, 6504 for routes
     train, test = train_test_split(df, test_size=.25)
-    y_train = train.col[train['ascent_date_year'] == 2017].values
+    y_train = train[col][train['ascent_date_year'] == 2017].values
     X_train = train[train['ascent_date_year'] != 2017].sample(sample_num)
     X_train = X_train.values
-    y_hold = test.col[test['ascent_date_year'] == 2017].values
+    y_hold = test[col][test['ascent_date_year'] == 2017].values
     X_hold = test[test_size['ascent_date_year'] != 2017].sample(sample_num)
     X_hold = X_hold.values
     return X_train, y_train, X_hold, y_hold
@@ -33,3 +34,5 @@ def split_data_ability(df,col, sample_num):
 # routes_X = routes[routes['ascent_date_year'] != 2017].sample(6504)
 # boulders_y = boulders.usa_boulders[boulders['ascent_date_year'] == 2017]
 # boulders_X = boulders[boulders['ascent_date_year'] != 2017].sample(7200)
+
+X_train, y_train, X_hold, y_hold = split_data_ability(boulders,'usa_boulders',7200)
