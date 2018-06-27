@@ -94,6 +94,9 @@ Before modeling the data to predict the difficulty of a climb, I dropped any col
 
 `['notes','climb_type','crag','sector','climb_country','method','birth','ascent_date','date','grade_id','climb_name','ascent_date_day','ascent_date_month','chipped']`
 
+Similarly, I dropped these columns before modeling the data to predict how hard users climbed in 2017.
+
+`['notes','climb_type','crag','sector','climb_country','method','birth','ascent_date','date','climb_name']`
 
 ### Modeling the Difficulty of a Climb
 
@@ -111,6 +114,20 @@ Final RMSE: 2.4600
 Final R2-score: 0.2667  
 Final RMSE: 0.0133  
 (The predicted range for route grades is 5.085 - 5.135)</br>
+
+### Modeling How Hard Users Climbed in 2017
+
+I followed the same process and code for modeling how hard users climbed in 2017 as with modeling the difficulty of a climb, with the added caveat that there were a limited number of rows with data for 2017. Below are the results of the final models.
+
+<img src='images/ridge_model_boulder_ability.png'>
+
+Final R2-score: -0.0020  
+Final RMSE: 2.9644  
+
+<img src='images/ridge_model_route_ability.png'> 
+
+Final R2-score: -0.0032  
+Final RMSE: 0.0134  
 
 ### Results
 
