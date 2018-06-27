@@ -47,7 +47,8 @@ def run_ridge_model(X,y):
     X_test_std, y_test_std = standardizer.transform(X_test, y_test)
     ridge = RidgeCV(alphas = np.logspace(-2,4,num=250),cv=10)
     ridge.fit(X_train_std,y_train_std)
-    y_hats = ridge.predict(X_test)
+    y_hats_std = ridge.predict(X_test_std)
+    X_test, y_hats = standardizer.inverse_transform(X_test_std,y_hats_std)
     ridge_score = ridge.score(X_test_std,y_test_std)
     return ridge, ridge_score, y_hats, y_test
 
