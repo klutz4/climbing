@@ -103,13 +103,13 @@ Using the model with the best R2 score (Ridge), I fit a Ridge model with the opt
 
 <img src='images/ridge_model_boulder_final.png'>
 Final R2-score: 0.2825  
-Final MSE: 5.9945
+Final MSE: 5.9945  
 (The range is 0 - 16)
 
 <img src='images/ridge_model_route_final.png'> 
 Final R2-score: 0.2706  
-Final MSE: 0.0002
-(The range for route grades is 5.04 - 5. 151)
+Final MSE: 0.0002  
+(The range for route grades is 5.04 - 5. 151)</br>
 
 ### Results
 
