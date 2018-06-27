@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split, KFold
 from sklearn.preprocessing import StandardScaler
 from sklearn.base import clone
 import matplotlib.pyplot as plt
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error as mse
 import utils
 
 import matplotlib as mpl
@@ -23,36 +23,15 @@ boulders = pd.read_csv('/Users/Kelly/galvanize/capstones/mod1/data/boulders.csv'
 routes = pd.read_csv('/Users/Kelly/galvanize/capstones/mod1/data/routes.csv')
 
 def drop_columns_grades(df):
-    cols = ['Unnamed: 0' ,'notes','climb_type','crag','sector','climb_country','method','birth','ascent_date','date','grade_id','climb_name','ascent_date_day','ascent_date_month','chipped']
-    for df in [routes,boulders]:
-        for col in cols:
-            df.drop(col,axis=1,inplace=True)
+    cols = ['Unnamed: 0','notes','climb_type','crag','sector','climb_country','method','birth','ascent_date','date','grade_id','climb_name','ascent_date_day','ascent_date_month','chipped']
+    for col in cols:
+        df.drop(col,axis=1,inplace=True)
     return df
-
-boulder = drop_columns_grades(boulders)
-route = drop_columns_grades(routes)
 
 def split_data_grades(df,target_column):
     train, test = train_test_split(df, test_size=.25)
     X_train, y_train = train.drop(target_column, axis=1).values, train[target_column].values
     X_hold, y_hold = test.drop(target_column, axis=1).values, test[target_column].values
-    return X_train, y_train, X_hold, y_hold
-
-def drop_columns_ability():
-    cols = ['Unnamed: 0' ,'notes','climb_type','crag','sector','climb_country','method','birth','ascent_date','date','climb_name']
-    for df in [routes,boulders]:
-        for col in cols:
-            df.drop(col,axis=1,inplace=True)
-    return df
-
-def split_data_ability(df,col, sample_num):
-    train, test = train_test_split(df, test_size=.25)
-    y_train = train.col[train['ascent_date_year'] == 2017].values
-    X_train = train[train['ascent_date_year'] != 2017].sample(sample_num)
-    X_train = X_train.values
-    y_hold = test.col[test['ascent_date_year'] == 2017].values
-    X_hold = test[test_size['ascent_date_year'] != 2017].sample(sample_num)
-    X_hold = X_hold.values
     return X_train, y_train, X_hold, y_hold
 
 def run_ridge_model(X,y):
@@ -67,7 +46,7 @@ def run_ridge_model(X,y):
     y_hats_std = ridge.predict(X_test_std)
     X_test, y_hats = standardizer.inverse_transform(X_test_std,y_hats_std)
     ridge_score = ridge.score(X_test_std,y_test_std)
-    return ridge, ridge_score, y_hats, y_test
+    return ridge, ridge_score, y_hats, y_test, X_test
 
 def run_lasso_model(X,y):
     X_train, X_test, y_train, y_test = train_test_split(X, y)
@@ -81,7 +60,7 @@ def run_lasso_model(X,y):
     y_hats_std = lasso.predict(X_test_std)
     X_test, y_hats = standardizer.inverse_transform(X_test_std,y_hats_std)
     lasso_score = lasso.score(X_test_std,y_test_std)
-    return lasso, lasso_score, y_hats, y_test
+    return lasso, lasso_score, y_hats, y_test, X_test
 
 def get_coefs(model,X):
     df = pd.DataFrame(model.coef_)
@@ -107,12 +86,35 @@ def find_error_scores(X,y,model_function,n):
         rss_scores.append(mean_squared_error(y_true,y_hat))
     return max(r2_scores),min(rss_scores)
 
+def plot_mse(model, X_train, y_train, X_test, y_test,title,filename):
+    train_errors = []
+    test_errors = []
+    train_pred = model.predict(X_train)
+    test_pred = model.predict(X_test)
+    for alpha in model.alphas:
+        train_errors.append(mse(y_train, train_pred))
+        test_errors.append(mse(y_test,test_pred))
+
+    fig, ax = plt.subplots(figsize=(14, 4))
+
+    ax.plot(np.log10(model.alphas), train_errors)
+    ax.plot(np.log10(model.alphas), test_errors)
+    ax.axvline(np.log10(model.alpha_), color='grey')
+    ax.set_title(title)
+    ax.set_xlabel(r"$\log(\alpha)$")
+    ax.set_ylabel("MSE")
+    plt.savefig(filename)
+
+
 def get_boulder_models():
+    boulder = drop_columns_grades(boulders)
     X_train, y_train, X_hold, y_hold = split_data_grades(boulder,'usa_boulders')
-    boulder_ridge, boulder_ridge_score, ridge_y_hats, ridge_y_true = run_ridge_model(X_train,y_train)
-    boulder_lasso, boulder_lasso_score,lasso_y_hats, lasso_y_true = run_lasso_model(X_train,y_train)
+    boulder_ridge, boulder_ridge_score, ridge_y_hats, ridge_y_true, ridge_X_test = run_ridge_model(X_train,y_train)
+    boulder_lasso, boulder_lasso_score,lasso_y_hats, lasso_y_true, lasso_X_test = run_lasso_model(X_train,y_train)
     plot_model_predictions(ridge_y_true,ridge_y_hats,'Ridge Prediction for Boulder grades','images/ridge_model_boulder.png')
     plot_model_predictions(lasso_y_true,lasso_y_hats,'Lasso Prediction for Boulder Grades','images/lasso_model_boulder.png')
+    plot_mse(boulder_ridge, X_train, y_train, ridge_X_test, ridge_y_true,"Ridge Regression Train and Test MSE" , 'images/boulder_ridge_MSE.png')
+    plot_mse(boulder_lasso, X_train, y_train, lasso_X_test, lasso_y_true,"Lasso Regression Train and Test MSE" , 'images/boulder_lasso_MSE.png')
     print('The Ridge R2 score is {}'.format(boulder_ridge_score))
     print('The optimal ridge alpha is {}'.format(boulder_ridge.alpha_))
     print('The Lasso R2 score is {}'.format(boulder_lasso_score))
@@ -120,9 +122,17 @@ def get_boulder_models():
     return X_train, y_train, X_hold, y_hold, boulder_ridge, boulder_lasso
 
 def get_route_models():
-    X_train, y_train, X_hold, y_hold = split_data(route,'usa_routes')
-    routes_ridge, routes_ridge_score, y_hats, y_test = run_ridge_model(X_train,y_train)
-    routes_lasso, routes_lasso_score = run_lasso_model(X_train,y_train)
+    route = drop_columns_grades(routes)
+    X_train, y_train, X_hold, y_hold = split_data_grades(route,'usa_routes')
+    route_ridge, route_ridge_score, ridge_y_hats, ridge_y_true = run_ridge_model(X_train,y_train)
+    route_lasso, route_lasso_score,lasso_y_hats, lasso_y_true = run_lasso_model(X_train,y_train)
+    plot_model_predictions(ridge_y_true,ridge_y_hats,'Ridge Prediction for Route grades','images/ridge_model_route.png')
+    plot_model_predictions(lasso_y_true,lasso_y_hats,'Lasso Prediction for Route Grades','images/lasso_model_route.png')
+    print('The Ridge R2 score is {}'.format(route_ridge_score))
+    print('The optimal ridge alpha is {}'.format(route_ridge.alpha_))
+    print('The Lasso R2 score is {}'.format(route_lasso_score))
+    print('The optimal lasso alpha is {}'.format(route_lasso.alpha_))
+    return X_train, y_train, X_hold, y_hold, route_ridge, route_lasso
 
 def make_scatter_plots(df,target):
     all_columns = df.columns
@@ -142,12 +152,20 @@ def test_model_on_hold(X_train,y_train,X_hold,y_hold,model,alpha,title,filename)
     y_pred_std = final_model.predict(X_hold_std)
     X_hold, y_pred = standardizer.inverse_transform(X_hold,y_pred_std)
     plot_model_predictions(y_hold, y_pred, title, filename)
-    final_score = final_model.score(X_hold,y_hold)
+    final_score = final_model.score(X_hold_std,y_hold_std)
     print('Final R2 score: {}'.format(final_score))
+    return final_score
 
-def main():
+def main_boulder():
     X_train, y_train, X_hold, y_hold, boulder_ridge, boulder_lasso = get_boulder_models()
     alpha1 = boulder_ridge.alpha_
     alpha2 = boulder_lasso.alpha_
     test_model_on_hold(X_train,y_train,X_hold,y_hold,Ridge,alpha1,'Final Ridge Prediction for Boulder grades','images/ridge_model_boulder_final.png')
     test_model_on_hold(X_train,y_train,X_hold,y_hold,Lasso,alpha2,'Final Lasso Prediction for Boulder grades','images/lasso_model_boulder_final.png')
+
+def main_route():
+    X_train, y_train, X_hold, y_hold, route_ridge, route_lasso = get_route_models()
+    alpha1 = route_ridge.alpha_
+    alpha2 = route_lasso.alpha_
+    test_model_on_hold(X_train,y_train,X_hold,y_hold,Ridge,alpha1,'Final Ridge Prediction for Route grades','images/ridge_model_route_final.png')
+    test_model_on_hold(X_train,y_train,X_hold,y_hold,Lasso,alpha2,'Final Lasso Prediction for Route grades','images/lasso_model_route_final.png')
