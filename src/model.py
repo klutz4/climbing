@@ -108,9 +108,7 @@ def plot_mse(model, X_train, y_train, X_test, y_test,title,filename):
     plt.savefig(filename)
 
 
-def get_boulder_models():
-    boulder = drop_columns_grades(boulders)
-    X_train, y_train, X_hold, y_hold = split_data_grades(boulder,'usa_boulders')
+def get_boulder_models(X_train,y_train):
     boulder_ridge, boulder_ridge_score, ridge_y_hats, ridge_y_true, ridge_X_test = run_ridge_model(X_train,y_train)
     boulder_lasso, boulder_lasso_score,lasso_y_hats, lasso_y_true, lasso_X_test = run_lasso_model(X_train,y_train)
     # plot_model_predictions(ridge_y_true,ridge_y_hats,'Ridge Prediction for Boulder grades','images/ridge_model_boulder.png')
@@ -121,11 +119,9 @@ def get_boulder_models():
     print('The optimal ridge alpha is {}'.format(boulder_ridge.alpha_))
     print('The Lasso R2 score is {}'.format(boulder_lasso_score))
     print('The optimal lasso alpha is {}'.format(boulder_lasso.alpha_))
-    return X_train, y_train, X_hold, y_hold, boulder_ridge, boulder_lasso
+    return boulder_ridge, boulder_lasso
 
-def get_route_models():
-    route = drop_columns_grades(routes)
-    X_train, y_train, X_hold, y_hold = split_data_grades(route,'usa_routes')
+def get_route_models(X_train,y_train):
     route_ridge, route_ridge_score, ridge_y_hats, ridge_y_true, ridge_X_test = run_ridge_model(X_train,y_train)
     route_lasso, route_lasso_score,lasso_y_hats, lasso_y_true, lasso_X_test = run_lasso_model(X_train,y_train)
     plot_mse(route_ridge, X_train, y_train, ridge_X_test, ridge_y_true,"Ridge Regression Train and Test MSE" , 'images/route_ridge_MSE.png')
@@ -136,7 +132,7 @@ def get_route_models():
     print('The optimal ridge alpha is {}'.format(route_ridge.alpha_))
     print('The Lasso R2 score is {}'.format(route_lasso_score))
     print('The optimal lasso alpha is {}'.format(route_lasso.alpha_))
-    return X_train, y_train, X_hold, y_hold, route_ridge, route_lasso
+    return route_ridge, route_lasso
 
 def make_scatter_plots(df,target):
     all_columns = df.columns
@@ -163,11 +159,15 @@ def test_model_on_hold(X_train,y_train,X_hold,y_hold,model,alpha,title,filename)
     return final_score, final_mse
 
 def main_boulder():
-    X_train, y_train, X_hold, y_hold, boulder_ridge, boulder_lasso = get_boulder_models()
+    boulder = drop_columns_grades(boulders)
+    X_train, y_train, X_hold, y_hold = split_data_grades(boulder,'usa_boulders')
+    boulder_ridge, boulder_lasso = get_boulder_models(X_train, y_train)
     test_model_on_hold(X_train,y_train,X_hold,y_hold,Ridge,boulder_ridge.alpha_,'Final Ridge Prediction for Boulder grades','images/ridge_model_boulder_final.png')
     test_model_on_hold(X_train,y_train,X_hold,y_hold,Lasso,boulder_lasso.alpha_,'Final Lasso Prediction for Boulder grades','images/lasso_model_boulder_final.png')
 
 def main_route():
-    X_train, y_train, X_hold, y_hold, route_ridge, route_lasso = get_route_models()
+    route = drop_columns_grades(routes)
+    X_train, y_train, X_hold, y_hold = split_data_grades(route,'usa_routes')
+    route_ridge, route_lasso = get_route_models(X_train,y_train)
     test_model_on_hold(X_train,y_train,X_hold,y_hold,Ridge,route_ridge.alpha_,'Final Ridge Prediction for Route grades','images/ridge_model_route_final.png')
     test_model_on_hold(X_train,y_train,X_hold,y_hold,Lasso,route_lasso.alpha_,'Final Lasso Prediction for Route grades','images/lasso_model_route_final.png')
