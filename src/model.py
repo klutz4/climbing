@@ -41,7 +41,7 @@ def run_ridge_model(X,y):
     X_train_std, y_train_std = standardizer.transform(X_train, y_train)
     X_test_std, y_test_std = standardizer.transform(X_test, y_test)
 
-    ridge = RidgeCV(alphas = np.logspace(-2,4,num=250),cv=20)
+    ridge = RidgeCV(alphas = np.logspace(-2,4,num=250),cv=10)
     ridge.fit(X_train_std,y_train_std)
     y_hats_std = ridge.predict(X_test_std)
     X_test, y_hats = standardizer.inverse_transform(X_test_std,y_hats_std)
@@ -55,7 +55,7 @@ def run_lasso_model(X,y):
     X_train_std, y_train_std = standardizer.transform(X_train, y_train)
     X_test_std, y_test_std = standardizer.transform(X_test, y_test)
 
-    lasso = LassoCV(alphas = np.logspace(-2,4,num=250),cv=20)
+    lasso = LassoCV(alphas = np.logspace(-2,4,num=250),cv=10)
     lasso.fit(X_train_std,y_train_std)
     y_hats_std = lasso.predict(X_test_std)
     X_test, y_hats = standardizer.inverse_transform(X_test_std,y_hats_std)
@@ -77,13 +77,15 @@ def plot_model_predictions(y_true,y_pred,title,filename):
     plt.savefig(filename)
     plt.clf()
 
-def find_error_scores(X,y,model_function,n):
+def find_error_scores(df,target_column,model_function,n):
     r2_scores = []
     rss_scores = []
+    df2 = drop_columns_grades(df)
+    X_train, y_train, X_hold, y_hold = split_data_grades(df2,target_column)
     for i in range(n+1):
-        model, score, y_hat, y_true = model_function(X,y)
+        model, score, y_hat, y_true, y_test = model_function(X_train,y_train)
         r2_scores.append(score)
-        rss_scores.append(mean_squared_error(y_true,y_hat))
+        rss_scores.append(mse(y_true,y_hat))
     return max(r2_scores),min(rss_scores)
 
 def plot_mse(model, X_train, y_train, X_test, y_test,title,filename):
