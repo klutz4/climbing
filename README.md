@@ -117,7 +117,9 @@ Final RMSE: 0.0133
 
 ### Modeling How Hard Users Climbed in 2017
 
-I followed the same process and code for modeling how hard users climbed in 2017 as with modeling the difficulty of a climb, with the added caveat that there were a limited number of rows with data for 2017. Below are the results of the final models.
+I followed the same process and code for modeling how hard users climbed in 2017 as with modeling the difficulty of a climb, with the added caveat that there were a limited number of rows with data for 2017. This forced the size of the feature matrix to shrink since a sample was taken from the full feature matrix to match the length of the target. 
+
+Below are the results of the final models.
 
 <img src='images/ridge_model_boulder_ability.png'>
 
