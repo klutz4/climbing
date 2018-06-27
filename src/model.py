@@ -159,7 +159,7 @@ def test_model_on_hold(X_train,y_train,X_hold,y_hold,model,alpha,title,filename)
     final_score = final_model.score(X_hold_std,y_hold_std)
     final_mse = mse(y_hold,y_pred)
     print('Final R2 score: {}'.format(final_score))
-    print('Final MSE: {}'.format(final_mse))
+    print('Final RMSE: {}'.format(np.sqrt(final_mse)))
     return final_score, final_mse
 
 def main_boulder():
