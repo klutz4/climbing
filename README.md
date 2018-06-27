@@ -15,13 +15,27 @@ Left: V4, Right: Also V4??
 
 As such, I've set out to see if I can answer some of these questions using data from climbers.
 
+For the data, I'm only looking at routes graded 5.4 - 5.15a that were not a Top rope ascent and boulders graded V0 - V16 completed by climbers from the USA.
+
 I have two ultimate goals:
 1. Find a model that predicts which grade a route/boulder should have.
-2. Find a model that predicts how hard a climber will climb in the next year.
+2. Find a model that predicts how hard users will climb the next year.
 
-### Datasource
+### Data Cleaning
 
-This data comes from the site 8a.nu, where climbers can keep a log of which boulders and routes they have completed and when. This data was downloaded from Kaggle, courtesy of David Cohen.
+This data comes from the site 8a.nu, where climbers can keep a log of which boulders and routes they have completed and when. The data came in the form of a sqlite database with 4 different tables: ascents, grades, methods and users. I converted the SQL tables to CSVs and then imported each to a `pandas` dataframe using the `import.py` script. The `clean_data.py`was used to clean the final `pandas` dataframe for use in EDA and modeling.
+
+The importing and cleaning steps included:
+* Merging the four dataframes into one.
+* Removing users born outside of the United States.
+* Dropping any rows with missing values in the birth, height, weight, usa_routes and usa_boulders columns.
+* Removing deactivated users, users without a start date, route grades under 5.4, ascents labeled as Toprope.
+* Dropping unwanted columns.
+* Converting height and weight to inches and lbs, respectively.
+* Converting birth and ascent_date to datetime format, and adding current_age and ascent_age columns.
+* Adding a time_to_send column.
+* Combining sponsor1, sponsor2, and sponsor3 into one sponsored columns with values 0 (not sponsored), 1 (sponsored).
+* Splitting the dataframe into two: one for routes and one for boulders.
 
 ### EDA
 
@@ -76,10 +90,27 @@ The overall average ascent age is 27.95.
 
 ### Feature Engineering
 
-### Modeling
+Before modeling the data to predict the difficulty of a climb, I dropped any columns in the list below, since the column was either highly correlated with the grade (target column) or another column that remains in each dataframe.  
+
+`['notes','climb_type','crag','sector','climb_country','method','birth','ascent_date','date','grade_id','climb_name','ascent_date_day','ascent_date_month','chipped']`
+
+
+### Modeling the Difficulty of a Climb
+
+I chose to use Ridge and Lasso to fit a model to my data using the sklearn's `RidgeCV` and `LassoCV` with alphas = np.logspace(-2,4,num=250) and cv=10. I first split my data into training and testing with a test size = 0.25, then standardized the training data, employed either `RidgeCV` or `LassoCV`, and compared the R2 scores.
+
+Using the model with the best R2 score (Ridge), I fit a Ridge model with the optimal alpha from my training sets to the unseen data and plotted the predicted values vs. the true values.
+
+<img src='images/ridge_model_boulder_final.png'>
+Final R2-score: 
+
+<img src='images/ridge_model_route_final.png'> 
+Final R2-score: 
 
 ### Results
 
 ### Future Work
 
 ### References
+
+This data was downloaded from Kaggle, courtesy of David Cohen.
