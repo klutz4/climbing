@@ -102,11 +102,13 @@ I chose to use Ridge and Lasso to fit a model to my data using the sklearn's `Ri
 Using the model with the best R2 score (Ridge), I fit a Ridge model with the optimal alpha from my training sets to the unseen data and plotted the predicted values vs. the true values.
 
 <img src='images/ridge_model_boulder_final.png'>
+
 Final R2-score: 0.2825  
 Final MSE: 5.9945  
 (The range is 0 - 16)
 
 <img src='images/ridge_model_route_final.png'> 
+
 Final R2-score: 0.2706  
 Final MSE: 0.0002  
 (The range for route grades is 5.04 - 5. 151)</br>
