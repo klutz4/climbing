@@ -15,8 +15,8 @@ As such, I've set out to see if I can answer some of these questions using data 
 For the data, I'm only looking at routes graded 5.4 - 5.15a that were not a Top rope ascent and boulders graded V0 - V16 completed by climbers from the USA.
 
 I have two ultimate goals:
-1. Find a model that predicts the grade of a route/boulder.
-2. Find a model that predicts how hard users climbed in 2017.
+1. Model the grade of a route/boulder.
+2. Model how hard users climbed in 2017 based on data from the prior years.
 
 ### Data Cleaning
 
