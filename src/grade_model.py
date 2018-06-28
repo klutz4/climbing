@@ -148,7 +148,6 @@ def plot_model_predictions(y_true,y_pred,title,filename):
     plt.clf()
 
 def main_boulder(df,title1,filename1,title2,filename2):
-    boulders, routes = import_data()
     boulder = drop_columns_grades(df)
     X_train, y_train, X_hold, y_hold = split_data_grades(boulder,'usa_boulders')
     boulder_ridge, boulder_lasso = get_boulder_models(X_train, y_train)
@@ -158,7 +157,6 @@ def main_boulder(df,title1,filename1,title2,filename2):
     print(boulder_coefs.sort_values(0))
 
 def main_route(df,title1,filename1,title2,filename2):
-    boulders, routes = import_data()
     route = drop_columns_grades(df)
     X_train, y_train, X_hold, y_hold = split_data_grades(route,'usa_routes')
     route_ridge, route_lasso = get_route_models(X_train,y_train)
@@ -210,3 +208,22 @@ def run_all_route_models():
     main_route(routes,'Ridge Prediction for Route grades','images/ridge_model_route_final.png','Lasso Prediction for Route grades','images/lasso_model_route_final.png')
     restrict_route()
     add_features_model_route()
+
+def edit_route_grades():
+    climb = pd.read_csv('/Users/Kelly/galvanize/capstones/mod1/data/climb.csv')
+    routes = climb.copy()
+    routes = routes.loc[climb['climb_type'] == 0]
+    routes.drop('usa_boulders',axis=1, inplace=True)
+    grade_dict = {'a':2,'b':4,'c':6,'d':8}
+    for i in range(10,16):
+        for key in grade_dict:
+            routes.usa_routes.replace('5.{}{}'.format(i,key),'5.{}{}'.format(i,grade_dict.get(key)),inplace=True)
+    for i in range(4,10):
+            routes.usa_routes.replace('5.{}'.format(i),'5.0{}'.format(i),inplace=True)
+    routes['usa_routes'] = pd.to_numeric(routes['usa_routes'])
+
+    dates = ['ascent_date','birth']
+    for col in dates:
+        routes[col] = routes[col].astype('datetime64')
+
+    main_route(routes,'Ridge Prediction for Route grades','images/ridge_model_route_updated.png','Lasso Prediction for Route grades','images/lasso_model_route_updated.png')

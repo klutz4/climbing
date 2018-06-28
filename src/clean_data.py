@@ -87,6 +87,7 @@ climb['sponsored'] = climb[['sponsor1','sponsor2','sponsor3']].max(axis=1)
 climb.drop(sponsors, axis=1, inplace=True)
 
 climb.drop('Unnamed: 0',axis=1,inplace=True)
+climb.to_csv('/Users/Kelly/galvanize/capstones/mod1/data/climb.csv')
 
 #create routes df
 routes = climb.copy()
