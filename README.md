@@ -103,13 +103,15 @@ Using the model with the best R2 score (Ridge), I fit a Ridge model with the opt
 
 <img src='images/ridge_model_boulder_final.png'>
 
-Final R2-score: 0.2778  
-Final RMSE: 2.4376  
+Final R2-score: 0.2754    
+Final non-standardized RMSE: 2.4488   
+Final standardized RMSE: 0.8483
 
 <img src='images/ridge_model_route_final.png'> 
 
-Final R2-score: 0.2691  
-Final RMSE: 0.0132  
+Final R2-score: 0.2645  
+Final non-standardized RMSE: 0.0132  
+Final standardized RMSE: 0.8545
 
 I used the lasso models to look at which coefficients zeroed out to see which features affected the grade prediction the most.
 
@@ -140,13 +142,15 @@ Below are the results of the final models.
 
 <img src='images/ridge_model_boulder_ability.png'>
 
-Final R2-score: -0.0020  
-Final RMSE: 2.9644  
+Final R2-score: -0.0001  
+Final non-standardized RMSE: 2.9806   
+Final standardized RMSE: 1.00157  
 
 <img src='images/ridge_model_route_ability.png'> 
 
-Final R2-score: -0.0032  
-Final RMSE: 0.0134  
+Final R2-score: 0.0005  
+Final non-standardized RMSE: 0.0140  
+Final standardized RMSE: 1.0256  
 
 ### Results - Why are these models not performing well?
 
@@ -160,25 +164,29 @@ Since the model for all grades was not fitting well, I decided to see if restric
 
 <img src='images/ridge_model_boulder_restrict.png'>
 
-R2 score: **0.2069**  
-RMSE: **1.8747**
+R2 score: **0.2063**  
+Non-standardized RMSE:**1.8774**  
+Standardized RMSE: 0.89057
 
 <img src='images/ridge_model_route_restrict.png'>
 
-R2 score: 0.2629  
-RMSE: **0.0063**
+R2 score: 0.2687    
+Non-standardized RMSE:  **0.0063**  
+Standardized RMSE: 0.8547   
 
 I then added two more features, soft and hard, based on notes from the users to see if this would improve the model.
 
 <img src='images/ridge_model_boulder_add.png'>
 
-R2 score: **0.2958**  
-RMSE: **2.4167**
+R2 score: **0.3000**  
+Non-standardized RMSE: 2.4190  
+Standardized RMSE: 0.8394
 
 <img src='images/ridge_model_route_add.png'>
 
-R2 score: 0.2714  
-RMSE: 0.0131
+R2 score: 0.2677  
+Non-standardized RMSE: 0.0133  
+Standardized RMSE: 0.8660
 
 ### Future Work
 
