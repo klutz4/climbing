@@ -10,9 +10,6 @@ Is this different for routes vs boulders?
 How long will it take me to progress to a certain level?  
 Is this route/boulder graded correctly?
 
-<img src='images/IMG_0326.png' width=400> <img src='images/IMG_0292.png' width=400>  
-Left: V4, Right: Also V4??
-
 As such, I've set out to see if I can answer some of these questions using data from climbers.
 
 For the data, I'm only looking at routes graded 5.4 - 5.15a that were not a Top rope ascent and boulders graded V0 - V16 completed by climbers from the USA.
@@ -154,6 +151,20 @@ Final RMSE: 0.0134
 ### Results - Why are these models not performing well?
 
 
+
+### Improving the Grade Model?
+
+Since the model for all grades was not fitting well, I decided to see if restricting my data to only boulder grades V5 and above and route grades 5.11a and above would help improve the model.
+
+<img src='images/ridge_model_boulder_restrict.png'>
+
+R2 score: **0.2073**  
+RMSE: **1.8839**
+
+<img src='images/ridge_model_route_restrict.png'>
+
+R2 score: 0.2686  
+RMSE: **0.0063**
 
 ### Future Work
 
