@@ -26,7 +26,7 @@ def import_data():
     return boulders, routes
 
 def drop_columns_grades(df):
-    cols = ['Unnamed: 0','notes','climb_type','crag','sector','climb_country','method','birth','ascent_date','date','grade_id','climb_name','ascent_date_day','ascent_date_month','chipped']
+    cols = ['Unnamed: 0','notes','climb_type','crag','sector','climb_country','method','birth','ascent_date','date','grade_id','climb_name','ascent_date_day','ascent_date_month']
     for col in cols:
         df.drop(col,axis=1,inplace=True)
     df = df.astype('float64')
@@ -69,19 +69,11 @@ def run_lasso_model(X,y):
 def get_boulder_models(X_train,y_train):
     boulder_ridge, boulder_ridge_score, ridge_y_hats, ridge_y_true, ridge_X_test = run_ridge_model(X_train,y_train)
     boulder_lasso, boulder_lasso_score,lasso_y_hats, lasso_y_true, lasso_X_test = run_lasso_model(X_train,y_train)
-    print('The Ridge R2 score is {}'.format(boulder_ridge_score))
-    print('The optimal ridge alpha is {}'.format(boulder_ridge.alpha_))
-    print('The Lasso R2 score is {}'.format(boulder_lasso_score))
-    print('The optimal lasso alpha is {}'.format(boulder_lasso.alpha_))
     return boulder_ridge, boulder_lasso
 
 def get_route_models(X_train,y_train):
     route_ridge, route_ridge_score, ridge_y_hats, ridge_y_true, ridge_X_test = run_ridge_model(X_train,y_train)
     route_lasso, route_lasso_score,lasso_y_hats, lasso_y_true, lasso_X_test = run_lasso_model(X_train,y_train)
-    print('The Ridge R2 score is {}'.format(route_ridge_score))
-    print('The optimal ridge alpha is {}'.format(route_ridge.alpha_))
-    print('The Lasso R2 score is {}'.format(route_lasso_score))
-    print('The optimal lasso alpha is {}'.format(route_lasso.alpha_))
     return route_ridge, route_lasso
 
 def test_model_on_hold(X_train,y_train,X_hold,y_hold,model,alpha,title,filename):
@@ -180,7 +172,7 @@ def restrict_boulder():
     boulders_restrict = boulders_restrict.loc[boulders_restrict['usa_boulders'] >= 5]
     main_boulder(boulders_restrict,'Final Ridge Prediction for Boulder grades','images/ridge_model_boulder_restrict.png','Final Lasso Prediction for Boulder grades','images/lasso_model_boulder_restrict.png')
 
-def restrict_routes():
+def restrict_route():
     boulders, routes = import_data()
     routes_restrict = routes.copy()
     routes_restrict = routes_restrict.loc[routes_restrict['usa_routes'] >= 5.11]
@@ -205,3 +197,15 @@ def add_features_model_route():
     boulders, routes = import_data()
     route = add_features(routes)
     main_route(route,'Ridge Prediction for Route grades','images/ridge_model_route_add.png','Lasso Prediction for Route grades','images/lasso_model_route_add.png')
+
+def run_all_boulder_models():
+    boulders, routes = import_data()
+    main_boulder(boulders,'Ridge Prediction for Boulder grades','images/ridge_model_boulder_final.png','Lasso Prediction for Boulder grades','images/lasso_model_boulder_final.png')
+    restrict_boulder()
+    add_features_model_boulder()
+
+def run_all_route_models():
+    boulders, routes = import_data()
+    main_route(routes,'Ridge Prediction for Route grades','images/ridge_model_route_final.png','Lasso Prediction for Route grades','images/lasso_model_route_final.png')
+    restrict_route()
+    add_features_model_route()
