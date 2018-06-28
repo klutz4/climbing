@@ -115,6 +115,26 @@ Final R2-score: 0.2667
 Final RMSE: 0.0133  
 (The predicted range for route grades is 5.085 - 5.135)</br>
 
+I used the lasso models to look at which coefficients were zeroed out to see which features affected the grade prediction the most.
+
+|Route Coefficient|Coefficient label| Boulder Coefficient
+|:-----|:------------------:|-----:|
+|-0.420227| method_id | -0.341025|
+|-0.160095 | current_age| -0.257434|
+|-0.098043 | weight| **-0.088076**|
+|-0.068357 | user_id |-0.168992|
+|-0.056192 | sex| -0.110300|
+|-0.044171 | ascent_age| -0.039622|
+|-0.012482 | height| **0.017309**|
+|-0.006193 | crag_id| **0.003741**|
+| 0.000000 | year| 0.000000 |
+| 0.000000 | sector_id| **-0.027723**|
+| 0.000000 | started| **-0.000505**|
+| 0.000000 | ascent_date_year| 0.000000|
+| 0.000000 | sponsored| 0.000000|
+| 0.094638 | rating| 0.112982 |
+| 0.252175 | time_to_send| 0.284513| 
+
 ### Modeling How Hard Users Climbed in 2017
 
 I followed the same process and code for modeling how hard users climbed in 2017 as with modeling the difficulty of a climb, with the added caveat that there were a limited number of rows with data for 2017. This forced the size of the feature matrix to shrink since a sample was taken from the full feature matrix to match the length of the target. 
@@ -131,9 +151,13 @@ Final RMSE: 2.9644
 Final R2-score: -0.0032  
 Final RMSE: 0.0134  
 
-### Results
+### Results - Why are these models not performing well?
+
+
 
 ### Future Work
+
+In the future, I'd like to spend more time on the model for how hard users climbed in 2017. I believe looking at the hardest a user climbed in the previous years, rather than all of the climbs they did, would create a better model (since a user probably climbed a large range of grades, not just at his/her max each time he/she went climbing). 
 
 ### References
 
