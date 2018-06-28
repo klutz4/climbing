@@ -4,11 +4,11 @@
 
 ### Motivation and Background
 
-As an avid climber, common questions we all have are:  
-How does my height/weight/age affect how hard I can climb?  
-Is this different for routes vs boulders?  
-How long will it take me to progress to a certain level?  
-Is this route/boulder graded correctly?
+As an avid climber, common questions my friends and I have are:  
+* How does my height/weight/age affect how hard I can climb?  
+* Is this different for routes vs boulders?  
+* How long will it take me to progress to a certain level?  
+* Is this route/boulder graded correctly?
 
 As such, I've set out to see if I can answer some of these questions using data from climbers.
 
