@@ -166,7 +166,7 @@ def main_boulder(df,title1,filename1,title2,filename2):
 
 def main_route(df,title1,filename1,title2,filename2):
     boulders, routes = import_data()
-    route = drop_columns_grades(routes)
+    route = drop_columns_grades(df)
     X_train, y_train, X_hold, y_hold = split_data_grades(route,'usa_routes')
     route_ridge, route_lasso = get_route_models(X_train,y_train)
     test_model_on_hold(X_train,y_train,X_hold,y_hold,Ridge,route_ridge.alpha_,title1,filename1)
