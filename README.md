@@ -89,7 +89,7 @@ The overall average ascent age is 27.95.
 
 Before modeling the data to predict the difficulty of a climb, I dropped any columns in the list below, since the column was either highly correlated with the grade (target column) or another column that remains in each dataframe.  
 
-`['notes','climb_type','crag','sector','climb_country','method','birth','ascent_date','date','grade_id','climb_name','ascent_date_day','ascent_date_month','chipped']`
+`['notes','climb_type','crag','sector','climb_country','method','birth','ascent_date','date','grade_id','climb_name','ascent_date_day','ascent_date_month']`
 
 Similarly, I dropped these columns before modeling the data to predict how hard users climbed in 2017.
 
@@ -103,34 +103,34 @@ Using the model with the best R2 score (Ridge), I fit a Ridge model with the opt
 
 <img src='images/ridge_model_boulder_final.png'>
 
-Final R2-score: 0.2789  
-Final RMSE: 2.4600  
+Final R2-score: 0.2778  
+Final RMSE: 2.4376  
 
 <img src='images/ridge_model_route_final.png'> 
 
-Final R2-score: 0.2667  
-Final RMSE: 0.0133  
-(The predicted range for route grades is 5.085 - 5.135)</br>
+Final R2-score: 0.2691  
+Final RMSE: 0.0132  
 
-I used the lasso models to look at which coefficients were zeroed out to see which features affected the grade prediction the most.
+I used the lasso models to look at which coefficients zeroed out to see which features affected the grade prediction the most.
 
 |Route Coefficient|Coefficient label| Boulder Coefficient
 |:-----|:------------------:|-----:|
-|-0.420227| method_id | -0.341025|
-|-0.160095 | current_age| -0.257434|
-|-0.098043 | weight| **-0.088076**|
-|-0.068357 | user_id |-0.168992|
-|-0.056192 | sex| -0.110300|
-|-0.044171 | ascent_age| -0.039622|
-|-0.012482 | height| **0.017309**|
-|-0.006193 | crag_id| **0.003741**|
+|-0.418591| method_id | -0.339049|
+|-0.161152 | current_age| -0.268121|
+|-0.099352 | weight| **-0.085443**|
+|-0.069749 | user_id |-0.168896|
+|-0.058349 | sex| -0.110131|
+|-0.034940 | ascent_age| -0.027954|
+|-0.016912 | height| **0.014752**|
+|-0.005231 | crag_id| **0.002308**|
 | 0.000000 | year| 0.000000 |
-| 0.000000 | sector_id| **-0.027723**|
-| 0.000000 | started| **-0.000505**|
+| 0.000000 | sector_id| **-0.034249**|
+| 0.000000 | started| **-0.001444**|
 | 0.000000 | ascent_date_year| 0.000000|
 | 0.000000 | sponsored| 0.000000|
-| 0.094638 | rating| 0.112982 |
-| 0.252175 | time_to_send| 0.284513| 
+| 0.016415 | chipped| 0.000000|
+| 0.095824 | rating| 0.112609 |
+| 0.252384 | time_to_send| 0.281009| 
 
 ### Modeling How Hard Users Climbed in 2017
 
@@ -160,13 +160,25 @@ Since the model for all grades was not fitting well, I decided to see if restric
 
 <img src='images/ridge_model_boulder_restrict.png'>
 
-R2 score: **0.2073**  
-RMSE: **1.8839**
+R2 score: **0.2069**  
+RMSE: **1.8747**
 
 <img src='images/ridge_model_route_restrict.png'>
 
-R2 score: 0.2686  
+R2 score: 0.2629  
 RMSE: **0.0063**
+
+I then added two more features, soft and hard, based on notes from the users to see if this would improve the model.
+
+<img src='images/ridge_model_boulder_add.png'>
+
+R2 score: **0.2958**  
+RMSE: **2.4167**
+
+<img src='images/ridge_model_route_add.png'>
+
+R2 score: 0.2714 
+RMSE: 0.0131
 
 ### Future Work
 
