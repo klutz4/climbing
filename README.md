@@ -33,6 +33,8 @@ The importing and cleaning steps included:
 * Adding a time_to_send column.
 * Combining sponsor1, sponsor2, and sponsor3 into one sponsored columns with values 0 (not sponsored), 1 (sponsored).
 * Splitting the dataframe into two: one for routes and one for boulders.
+* Converting boulder grades and route grades into numbers instead of objects.
+  * I removed the V from the boulder grades to convert to integers 0 -16. For routes, I replaced the a,b,c,d in route grades with 1,2,3,4 (i.e. 5.11a = 5.111) and added a 0 if the grade was under 5.10 (i.e. 5.6 = 5.06).
 
 ### EDA
 
@@ -134,30 +136,6 @@ I used the lasso models to look at which coefficients zeroed out to see which fe
 | 0.095824 | rating| 0.112609 |
 | 0.252384 | time_to_send| 0.281009| 
 
-### Modeling How Hard Users Climbed in 2017
-
-I followed the same process and code for modeling how hard users climbed in 2017 as with modeling the difficulty of a climb, with the added caveat that there were a limited number of rows with data for 2017. This forced the size of the feature matrix to shrink since a sample was taken from the full feature matrix to match the length of the target. 
-
-Below are the results of the final models.
-
-<img src='images/ridge_model_boulder_ability.png'>
-
-Final R2-score: -0.0001  
-Final non-standardized RMSE: 2.9806   
-Final standardized RMSE: 1.00157  
-
-<img src='images/ridge_model_route_ability.png'> 
-
-Final R2-score: 0.0005  
-Final non-standardized RMSE: 0.0140  
-Final standardized RMSE: 1.0256  
-
-### Results - Why are these models not performing well?
-
-For the difficulty of a climb model, I believe this model is not performing well due to the nature of the data. The highest influencer of the model are time it took a user to do the climb, but just because it took a user years to send a V4, say, that doesn't tell us much about how hard the boulder actually is (the user may not have tried that boulder before, he/she could have been warming up, etc.) In order to improve the model, we would need more data about the actual climbs, like the kind of holds on the climb (crimps, slopers, jugs, etc.) or the type of rock.
-
-For the climbing abiltiy in 2017 model, due to the number of reported ascents in 2017, the data used to train/test was cut down  from 129,348 rows to < 7200 rows for boulders and from 115,391 rows to < 6500 for routes. The models shown were from only one sample of the total data for the years prior to 2017, so the model is heavily dependent on which rows were randomly chosen. In order to improve the model, I would need to fit the model to many samples and choose the one that performed the best.
-
 ### Improving the Grade Model?
 
 Since the model for all grades was not fitting well, I decided to see if restricting my data to only boulder grades V5 and above and route grades 5.11a and above would help improve the model.
@@ -187,6 +165,31 @@ Standardized RMSE: 0.8394
 R2 score: 0.2677  
 Non-standardized RMSE: 0.0133  
 Standardized RMSE: 0.8660
+
+### Modeling How Hard Users Climbed in 2017
+
+I followed the same process and code for modeling how hard users climbed in 2017 as with modeling the difficulty of a climb, with the added caveat that there were a limited number of rows with data for 2017. This forced the size of the feature matrix to shrink since a sample was taken from the full feature matrix to match the length of the target. 
+
+Below are the results of the final models.
+
+<img src='images/ridge_model_boulder_ability.png'>
+
+Final R2-score: -0.0001  
+Final non-standardized RMSE: 2.9806   
+Final standardized RMSE: 1.00157  
+
+<img src='images/ridge_model_route_ability.png'> 
+
+Final R2-score: 0.0005  
+Final non-standardized RMSE: 0.0140  
+Final standardized RMSE: 1.0256  
+
+### Results - Why are these models not performing well?
+
+For the difficulty of a climb model, I believe this model is not performing well due to the nature of the data. The highest influencer of the model are time it took a user to do the climb, but just because it took a user years to send a V4, say, that doesn't tell us much about how hard the boulder actually is (the user may not have tried that boulder before, he/she could have been warming up, etc.) In order to improve the model, we would need more data about the actual climbs, like the kind of holds on the climb (crimps, slopers, jugs, etc.) or the type of rock. Also, the fact that boulder and route grades are discrete, not continuous may have an affect on the predictions, especially for routes.
+
+For the climbing abiltiy in 2017 model, due to the number of reported ascents in 2017, the data used to train/test was cut down  from 129,348 rows to < 7200 rows for boulders and from 115,391 rows to < 6500 for routes. The models shown were from only one sample of the total data for the years prior to 2017, so the model is heavily dependent on which rows were randomly chosen. In order to improve the model, I would need to fit the model to many samples and choose the one that performed the best.
+
 
 ### Future Work
 
