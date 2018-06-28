@@ -8,15 +8,13 @@ from sklearn.base import clone
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error as mse
 import utils
-from src.model import get_boulder_models, get_route_models, test_model_on_hold
-
-boulders = pd.read_csv('/Users/Kelly/galvanize/capstones/mod1/data/boulders.csv')
-routes = pd.read_csv('/Users/Kelly/galvanize/capstones/mod1/data/routes.csv')
+from model import import_data
 
 def drop_columns_ability(df):
     cols = ['Unnamed: 0' ,'notes','climb_type','crag','sector','climb_country','method','birth','ascent_date','date','climb_name']
     for col in cols:
         df.drop(col,axis=1,inplace=True)
+    df = df.astype('float64')
     return df
 
 def split_data_ability(df,col):
@@ -31,6 +29,7 @@ def split_data_ability(df,col):
     return X_train, y_train, X_hold, y_hold
 
 def main_ability_boulder():
+    boulders, routes = import_data()
     boulder = drop_columns_ability(boulders)
     X_train, y_train, X_hold, y_hold = split_data_ability(boulder,'usa_boulders')
     boulder_ridge, boulder_lasso = get_boulder_models(X_train,y_train)
@@ -38,6 +37,7 @@ def main_ability_boulder():
     test_model_on_hold(X_train,y_train,X_hold,y_hold,Lasso,boulder_lasso.alpha_,'Final Lasso Prediction for Boulder Ability','images/lasso_model_boulder_ability.png')
 
 def main_ability_route():
+    boulders, routes = model.import_data()
     route = drop_columns_ability(routes)
     X_train, y_train, X_hold, y_hold = split_data_ability(route,'usa_routes')
     route_ridge, route_lasso = get_route_models(X_train,y_train)

@@ -87,8 +87,10 @@ def test_model_on_hold(X_train,y_train,X_hold,y_hold,model,alpha,title,filename)
     X_hold, y_pred = standardizer.inverse_transform(X_hold,y_pred_std)
     plot_model_predictions(y_hold, y_pred, title, filename)
     final_score = final_model.score(X_hold_std,y_hold_std)
+    final_mse_std = mse(y_hold_std,y_pred_std)
     final_mse = mse(y_hold,y_pred)
     print('Final R2 score: {}'.format(final_score))
+    print('Final standardized RMSE: {}'.format(np.sqrt(final_mse_std)))
     print('Final RMSE: {}'.format(np.sqrt(final_mse)))
     return final_score, final_mse
 
