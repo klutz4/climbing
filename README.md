@@ -177,7 +177,7 @@ RMSE: **2.4167**
 
 <img src='images/ridge_model_route_add.png'>
 
-R2 score: 0.2714 
+R2 score: 0.2714  
 RMSE: 0.0131
 
 ### Future Work
