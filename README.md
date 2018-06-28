@@ -4,19 +4,19 @@
 
 ### Motivation and Background
 
-As an avid climber, common questions we all have are:  
-How does my height/weight/age affect how hard I can climb?  
-Is this different for routes vs boulders?  
-How long will it take me to progress to a certain level?  
-Is this route/boulder graded correctly?
+As an avid climber, common questions my friends and I have are:  
+* How does my height/weight/age affect how hard I can climb?  
+* Is this different for routes vs boulders?  
+* How long will it take me to progress to a certain level?  
+* Is this route/boulder graded correctly?
 
 As such, I've set out to see if I can answer some of these questions using data from climbers.
 
 For the data, I'm only looking at routes graded 5.4 - 5.15a that were not a Top rope ascent and boulders graded V0 - V16 completed by climbers from the USA.
 
 I have two ultimate goals:
-1. Find a model that predicts the grade of a route/boulder.
-2. Find a model that predicts how hard users climbed in 2017.
+1. Model the grade of a route/boulder.
+2. Model how hard users climbed in 2017 based on data from the prior years.
 
 ### Data Cleaning
 
@@ -186,7 +186,7 @@ Final standardized RMSE: 1.0256
 
 ### Results - Why are these models not performing well?
 
-For the difficulty of a climb model, I believe this model is not performing well due to the nature of the data. The highest influencer of the model are time it took a user to do the climb, but just because it took a user years to send a V4, say, that doesn't tell us much about how hard the boulder actually is (the user may not have tried that boulder before, he/she could have been warming up, etc.) In order to improve the model, we would need more data about the actual climbs, like the kind of holds on the climb (crimps, slopers, jugs, etc.) or the type of rock. Also, the fact that boulder and route grades are discrete, not continuous may have an affect on the predictions, especially for routes.
+For the difficulty of a climb model, I believe this model is not performing well due to the nature of the data. The highest influencer of the model are time it took a user to do the climb, but just because it took a user years to send a V4, say, that doesn't tell us much about how hard the boulder actually is (the user may not have tried that boulder before, he/she could have been warming up, etc.) In order to improve the model, we would need more data about the actual climbs, like the kind of holds on the climb (crimps, slopers, jugs, etc.) or the type of rock.
 
 For the climbing abiltiy in 2017 model, due to the number of reported ascents in 2017, the data used to train/test was cut down  from 129,348 rows to < 7200 rows for boulders and from 115,391 rows to < 6500 for routes. The models shown were from only one sample of the total data for the years prior to 2017, so the model is heavily dependent on which rows were randomly chosen. In order to improve the model, I would need to fit the model to many samples and choose the one that performed the best.
 
