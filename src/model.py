@@ -180,11 +180,11 @@ def plot_predictions_and_mse():
     plot_mse(boulder_ridge, X_train, y_train, ridge_X_test, ridge_y_true,"Ridge Regression Train and Test MSE" , 'images/boulder_ridge_MSE.png')
     plot_mse(boulder_lasso, X_train, y_train, lasso_X_test, lasso_y_true,"Lasso Regression Train and Test MSE" , 'images/boulder_lasso_MSE.png')
 
-def restrict_grades():
+def restrict_boulder():
     boulders = pd.read_csv('/Users/Kelly/galvanize/capstones/mod1/data/boulders.csv')
 
     boulders_restrict = boulders.copy()
-    boulders_restrict = boulders.loc[boulders['usa_boulders'] >= 5]
+    boulders_restrict = boulders_restrict.loc[boulders_restrict['usa_boulders'] >= 5]
     boulder_restrict = drop_columns_grades(boulders_restrict)
     X_train, y_train, X_hold, y_hold = split_data_grades(boulder_restrict,'usa_boulders')
     boulder_ridge, boulder_lasso = get_boulder_models(X_train, y_train)
@@ -192,3 +192,16 @@ def restrict_grades():
     test_model_on_hold(X_train,y_train,X_hold,y_hold,Lasso,boulder_lasso.alpha_,'Final Lasso Prediction for Boulder grades','images/lasso_model_boulder_restrict.png')
     boulder_coefs = get_coefs(boulder_lasso,boulders_restrict.drop('usa_boulders',axis=1))
     print(boulder_coefs.sort_values(0))
+
+def restrict_routes():
+    routes = pd.read_csv('/Users/Kelly/galvanize/capstones/mod1/data/routes.csv')
+
+    routes_restrict = routes.copy()
+    routes_restrict = routes_restrict.loc[routes_restrict['usa_routes'] >= 5.11]
+    route_restrict = drop_columns_grades(routes_restrict)
+    X_train, y_train, X_hold, y_hold = split_data_grades(route_restrict,'usa_routes')
+    route_ridge, route_lasso = get_route_models(X_train, y_train)
+    test_model_on_hold(X_train,y_train,X_hold,y_hold,Ridge,route_ridge.alpha_,'Final Ridge Prediction for Route grades','images/ridge_model_route_restrict.png')
+    test_model_on_hold(X_train,y_train,X_hold,y_hold,Lasso,route_lasso.alpha_,'Final Lasso Prediction for Route grades','images/lasso_model_route_restrict.png')
+    route_coefs = get_coefs(route_lasso,routes_restrict.drop('usa_routes',axis=1))
+    print(route_coefs.sort_values(0))
