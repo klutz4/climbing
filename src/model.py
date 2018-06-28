@@ -20,8 +20,10 @@ mpl.rcParams.update({
     'legend.fontsize'     : 'medium',
 })
 
-boulders = pd.read_csv('/Users/Kelly/galvanize/capstones/mod1/data/boulders.csv')
-routes = pd.read_csv('/Users/Kelly/galvanize/capstones/mod1/data/routes.csv')
+def import_data():
+    boulders = pd.read_csv('/Users/Kelly/galvanize/capstones/mod1/data/boulders.csv')
+    routes = pd.read_csv('/Users/Kelly/galvanize/capstones/mod1/data/routes.csv')
+    return boulders, routes
 
 def drop_columns_grades(df):
     cols = ['Unnamed: 0','notes','climb_type','crag','sector','climb_country','method','birth','ascent_date','date','grade_id','climb_name','ascent_date_day','ascent_date_month','chipped']
@@ -152,56 +154,54 @@ def plot_model_predictions(y_true,y_pred,title,filename):
     plt.savefig(filename)
     plt.clf()
 
-def main_boulder():
-    boulder = drop_columns_grades(boulders)
+def main_boulder(df,title1,filename1,title2,filename2):
+    boulders, routes = import_data()
+    boulder = drop_columns_grades(df)
     X_train, y_train, X_hold, y_hold = split_data_grades(boulder,'usa_boulders')
     boulder_ridge, boulder_lasso = get_boulder_models(X_train, y_train)
-    test_model_on_hold(X_train,y_train,X_hold,y_hold,Ridge,boulder_ridge.alpha_,'Final Ridge Prediction for Boulder grades','images/ridge_model_boulder_final.png')
-    test_model_on_hold(X_train,y_train,X_hold,y_hold,Lasso,boulder_lasso.alpha_,'Final Lasso Prediction for Boulder grades','images/lasso_model_boulder_final.png')
+    test_model_on_hold(X_train,y_train,X_hold,y_hold,Ridge,boulder_ridge.alpha_,title1,filename1)
+    test_model_on_hold(X_train,y_train,X_hold,y_hold,Lasso,boulder_lasso.alpha_,title2,filename2)
     boulder_coefs = get_coefs(boulder_lasso,boulder.drop('usa_boulders',axis=1))
     print(boulder_coefs.sort_values(0))
 
-def main_route():
+def main_route(df,title1,filename1,title2,filename2):
+    boulders, routes = import_data()
     route = drop_columns_grades(routes)
     X_train, y_train, X_hold, y_hold = split_data_grades(route,'usa_routes')
     route_ridge, route_lasso = get_route_models(X_train,y_train)
-    test_model_on_hold(X_train,y_train,X_hold,y_hold,Ridge,route_ridge.alpha_,'Final Ridge Prediction for Route grades','images/ridge_model_route_final.png')
-    test_model_on_hold(X_train,y_train,X_hold,y_hold,Lasso,route_lasso.alpha_,'Final Lasso Prediction for Route grades','images/lasso_model_route_final.png')
+    test_model_on_hold(X_train,y_train,X_hold,y_hold,Ridge,route_ridge.alpha_,title1,filename1)
+    test_model_on_hold(X_train,y_train,X_hold,y_hold,Lasso,route_lasso.alpha_,title2,filename2)
     route_coefs = get_coefs(route_lasso,route.drop('usa_routes',axis=1))
     print(route_coefs.sort_values(0))
 
-def plot_predictions_and_mse():
-    plot_mse(route_ridge, X_train, y_train, ridge_X_test, ridge_y_true,"Ridge Regression Train and Test MSE" , 'images/route_ridge_MSE.png')
-    plot_mse(route_lasso, X_train, y_train, lasso_X_test, lasso_y_true,"Lasso Regression Train and Test MSE" , 'images/route_lasso_MSE.png')
-    plot_model_predictions(ridge_y_true,ridge_y_hats,'Ridge Prediction for Route grades','images/ridge_model_route.png')
-    plot_model_predictions(lasso_y_true,lasso_y_hats,'Lasso Prediction for Route Grades','images/lasso_model_route.png')
-    plot_model_predictions(ridge_y_true,ridge_y_hats,'Ridge Prediction for Boulder grades','images/ridge_model_boulder.png')
-    plot_model_predictions(lasso_y_true,lasso_y_hats,'Lasso Prediction for Boulder Grades','images/lasso_model_boulder.png')
-    plot_mse(boulder_ridge, X_train, y_train, ridge_X_test, ridge_y_true,"Ridge Regression Train and Test MSE" , 'images/boulder_ridge_MSE.png')
-    plot_mse(boulder_lasso, X_train, y_train, lasso_X_test, lasso_y_true,"Lasso Regression Train and Test MSE" , 'images/boulder_lasso_MSE.png')
-
 def restrict_boulder():
-    boulders = pd.read_csv('/Users/Kelly/galvanize/capstones/mod1/data/boulders.csv')
-
+    boulders, routes = import_data()
     boulders_restrict = boulders.copy()
     boulders_restrict = boulders_restrict.loc[boulders_restrict['usa_boulders'] >= 5]
-    boulder_restrict = drop_columns_grades(boulders_restrict)
-    X_train, y_train, X_hold, y_hold = split_data_grades(boulder_restrict,'usa_boulders')
-    boulder_ridge, boulder_lasso = get_boulder_models(X_train, y_train)
-    test_model_on_hold(X_train,y_train,X_hold,y_hold,Ridge,boulder_ridge.alpha_,'Final Ridge Prediction for Boulder grades','images/ridge_model_boulder_restrict.png')
-    test_model_on_hold(X_train,y_train,X_hold,y_hold,Lasso,boulder_lasso.alpha_,'Final Lasso Prediction for Boulder grades','images/lasso_model_boulder_restrict.png')
-    boulder_coefs = get_coefs(boulder_lasso,boulders_restrict.drop('usa_boulders',axis=1))
-    print(boulder_coefs.sort_values(0))
+    main_boulder(boulders_restrict,'Final Ridge Prediction for Boulder grades','images/ridge_model_boulder_restrict.png','Final Lasso Prediction for Boulder grades','images/lasso_model_boulder_restrict.png')
 
 def restrict_routes():
-    routes = pd.read_csv('/Users/Kelly/galvanize/capstones/mod1/data/routes.csv')
-
+    boulders, routes = import_data()
     routes_restrict = routes.copy()
     routes_restrict = routes_restrict.loc[routes_restrict['usa_routes'] >= 5.11]
-    route_restrict = drop_columns_grades(routes_restrict)
-    X_train, y_train, X_hold, y_hold = split_data_grades(route_restrict,'usa_routes')
-    route_ridge, route_lasso = get_route_models(X_train, y_train)
-    test_model_on_hold(X_train,y_train,X_hold,y_hold,Ridge,route_ridge.alpha_,'Final Ridge Prediction for Route grades','images/ridge_model_route_restrict.png')
-    test_model_on_hold(X_train,y_train,X_hold,y_hold,Lasso,route_lasso.alpha_,'Final Lasso Prediction for Route grades','images/lasso_model_route_restrict.png')
-    route_coefs = get_coefs(route_lasso,routes_restrict.drop('usa_routes',axis=1))
-    print(route_coefs.sort_values(0))
+    main_route(routes_restrict,'Final Ridge Prediction for Route grades','images/ridge_model_route_restrict.png','Final Lasso Prediction for Route grades','images/lasso_model_route_restrict.png')
+
+def add_features(df):
+    descriptions = ['soft','hard']
+    for description in descriptions:
+        df[description] = df.notes.str.contains(description)
+        df[description].replace(True,1,inplace = True)
+        for string in df[description].unique():
+            if string != 1:
+                df[description].replace(string,0,inplace = True)
+    return df
+
+def add_features_model_boulder():
+    boulders, routes = import_data()
+    boulder = add_features(boulders)
+    main_boulder(boulder,'Ridge Prediction for Boulder grades','images/ridge_model_boulder_add.png','Lasso Prediction for Boulder grades','images/lasso_model_boulder_add.png')
+
+def add_features_model_route():
+    boulders, routes = import_data()
+    route = add_features(routes)
+    main_route(route,'Ridge Prediction for Route grades','images/ridge_model_route_add.png','Lasso Prediction for Route grades','images/lasso_model_route_add.png')
