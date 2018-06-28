@@ -8,7 +8,7 @@ from sklearn.base import clone
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error as mse
 import utils
-from model import import_data
+from grade_model import import_data, get_route_models, get_boulder_models, test_model_on_hold
 
 def drop_columns_ability(df):
     cols = ['Unnamed: 0' ,'notes','climb_type','crag','sector','climb_country','method','birth','ascent_date','date','climb_name']
@@ -37,7 +37,7 @@ def main_ability_boulder():
     test_model_on_hold(X_train,y_train,X_hold,y_hold,Lasso,boulder_lasso.alpha_,'Final Lasso Prediction for Boulder Ability','images/lasso_model_boulder_ability.png')
 
 def main_ability_route():
-    boulders, routes = model.import_data()
+    boulders, routes = import_data()
     route = drop_columns_ability(routes)
     X_train, y_train, X_hold, y_hold = split_data_ability(route,'usa_routes')
     route_ridge, route_lasso = get_route_models(X_train,y_train)
