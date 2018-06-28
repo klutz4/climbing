@@ -135,7 +135,6 @@ def plot_mse(model, X_train, y_train, X_test, y_test,title,filename):
     ax.set_ylabel("MSE")
     plt.savefig(filename)
 
-
 def plot_model_predictions(y_true,y_pred,title,filename):
     fig = plt.figure(figsize=(15,8))
     ax = fig.add_subplot(111)
