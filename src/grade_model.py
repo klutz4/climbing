@@ -27,25 +27,25 @@ def import_data():
 
 def drop_columns_grades(df):
     cols = ['Unnamed: 0','notes','climb_type','crag','sector','climb_country','method','birth','ascent_date','date','grade_id','climb_name','ascent_date_day','ascent_date_month']
-    for col in cols:
+    for col in cols: # I think you could do df.drop(columns = cols) instead of this for loop
         df.drop(col,axis=1,inplace=True)
     df = df.astype('float64')
     return df
 
 def split_data_grades(df,target_column):
     train, test = train_test_split(df, test_size=.25)
-    X_train, y_train = train.drop(target_column, axis=1).values, train[target_column].values
+    X_train, y_train = train.drop(target_column, axis=1).values, train[target_column].values # I think you can skip the .values here, but it's more of a preference thing!
     X_hold, y_hold = test.drop(target_column, axis=1).values, test[target_column].values
     return X_train, y_train, X_hold, y_hold
 
-def run_ridge_model(X,y):
+def run_ridge_model(X,y): #this could definitely be combined with run_lasso model into a fxn run_model(model, X, y, alphas = np.logspace(-2, 4 , num = 250))
     X_train, X_test, y_train, y_test = train_test_split(X, y)
     standardizer = utils.XyScaler()
     standardizer.fit(X_train,y_train)
     X_train_std, y_train_std = standardizer.transform(X_train, y_train)
     X_test_std, y_test_std = standardizer.transform(X_test, y_test)
 
-    ridge = RidgeCV(alphas = np.logspace(-2,4,num=250),cv=10)
+    ridge = RidgeCV(alphas = np.logspace(-2,4,num=250),cv=10) #passing alphas to the function would give you more flexibility
     ridge.fit(X_train_std,y_train_std)
     y_hats_std = ridge.predict(X_test_std)
     X_test, y_hats = standardizer.inverse_transform(X_test_std,y_hats_std)
@@ -66,7 +66,7 @@ def run_lasso_model(X,y):
     lasso_score = r2_score(y_test_std,y_hats_std)
     return lasso, lasso_score, y_hats, y_test, X_test
 
-def get_boulder_models(X_train,y_train):
+def get_boulder_models(X_train,y_train): #you could combine these functions into one: get_models(X_train, y_train); you get your different models by passing different data
     boulder_ridge, boulder_ridge_score, ridge_y_hats, ridge_y_true, ridge_X_test = run_ridge_model(X_train,y_train)
     boulder_lasso, boulder_lasso_score,lasso_y_hats, lasso_y_true, lasso_X_test = run_lasso_model(X_train,y_train)
     return boulder_ridge, boulder_lasso
@@ -76,7 +76,7 @@ def get_route_models(X_train,y_train):
     route_lasso, route_lasso_score,lasso_y_hats, lasso_y_true, lasso_X_test = run_lasso_model(X_train,y_train)
     return route_ridge, route_lasso
 
-def test_model_on_hold(X_train,y_train,X_hold,y_hold,model,alpha,title,filename):
+def test_model_on_hold(X_train,y_train,X_hold,y_hold,model,alpha,title,filename): #there's probably a bit over overlap with your above fxns but overall this is a super tight function
     standardizer = utils.XyScaler()
     standardizer.fit(X_train,y_train)
     X_train_std, y_train_std = standardizer.transform(X_train, y_train)
@@ -94,7 +94,7 @@ def test_model_on_hold(X_train,y_train,X_hold,y_hold,model,alpha,title,filename)
     print('Final RMSE: {}'.format(np.sqrt(final_mse)))
     return final_score, final_mse
 
-def get_coefs(model,X):
+def get_coefs(model,X): #nice
     df = pd.DataFrame(model.coef_)
     df['coef_names'] = X.columns
     return df
@@ -110,7 +110,7 @@ def find_error_scores(df,target_column,model_function,n):
         mse_scores.append(mse(y_true,y_hat))
     return max(r2_scores),min(mse_scores)
 
-def make_scatter_plots(df,target):
+def make_scatter_plots(df,target): # good function!
     all_columns = df.columns
     for col in all_columns:
         df.plot(kind='scatter', y=target, x=col, edgecolor='none', figsize=(12, 5))
@@ -123,7 +123,7 @@ def plot_mse(model, X_train, y_train, X_test, y_test,title,filename):
     test_errors = []
     train_pred = model.predict(X_train)
     test_pred = model.predict(X_test)
-    for alpha in model.alphas:
+    for alpha in model.alphas: # the models actually have a list of the MSEs in an (alphas X folds array): model.mse_path_
         train_errors.append(mse(y_train, train_pred))
         test_errors.append(mse(y_test,test_pred))
 
@@ -133,7 +133,7 @@ def plot_mse(model, X_train, y_train, X_test, y_test,title,filename):
     ax.plot(np.log10(model.alphas), test_errors)
     ax.axvline(np.log10(model.alpha_), color='grey')
     ax.set_title(title)
-    ax.set_xlabel(r"$\log(\alpha)$")
+    ax.set_xlabel(r"$\log(\alpha)$") #fancy
     ax.set_ylabel("MSE")
     plt.savefig(filename)
 
@@ -179,7 +179,7 @@ def restrict_route():
 
 def add_features(df):
     descriptions = ['soft','hard']
-    for description in descriptions:
+    for description in descriptions: #I think pd.get_dummies might do something like what you're doing here
         df[description] = df.notes.str.contains(description)
         df[description].replace(True,1,inplace = True)
         for string in df[description].unique():
@@ -217,7 +217,7 @@ def edit_route_grades():
     grade_dict = {'a':2,'b':4,'c':6,'d':8}
     for i in range(10,16):
         for key in grade_dict:
-            routes.usa_routes.replace('5.{}{}'.format(i,key),'5.{}{}'.format(i,grade_dict.get(key)),inplace=True)
+            routes.usa_routes.replace('5.{}{}'.format(i,key),'5.{}{}'.format(i,grade_dict.get(key)),inplace=True) #nice
     for i in range(4,10):
             routes.usa_routes.replace('5.{}'.format(i),'5.0{}'.format(i),inplace=True)
     routes['usa_routes'] = pd.to_numeric(routes['usa_routes'])
