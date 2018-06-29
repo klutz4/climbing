@@ -38,20 +38,15 @@ The importing and cleaning steps included:
 
 ### EDA
 
-<img src='images/boulders_per_gender.png'>
-<img src='images/routes_per_gender.png'>  
+<img src='images/boulders_per_gender.png' width=425> <img src='images/routes_per_gender.png' width=425>  
 
-<img src='images/boulders_per_age.png'>
-<img src='images/routes_per_age.png'>  
+<img src='images/boulders_per_age.png' width=425> <img src='images/routes_per_age.png' width=425>  
 
-<img src='images/boulders_per_height.png'>
-<img src='images/routes_per_height.png'>  
+<img src='images/boulders_per_height.png' width=425> <img src='images/routes_per_height.png' width=425>  
 
-<img src='images/boulders_per_weight.png'>
-<img src='images/routes_per_weight.png'>  
+<img src='images/boulders_per_weight.png' width=425> <img src='images/routes_per_weight.png' width=425>  
 
-<img src='images/boulders_send_time.png'>
-<img src='images/routes_send_time.png'>  
+<img src='images/boulders_send_time.png' width=425> <img src='images/routes_send_time.png' width=425>  
 
 #### Boulders
 |Grade|Average ascent age|Grade|   Average ascent age
