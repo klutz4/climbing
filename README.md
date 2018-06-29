@@ -12,7 +12,7 @@ As an avid climber, common questions my friends and I have are:
 
 As such, I've set out to see if I can answer some of these questions using data from climbers.
 
-For the data, I'm only looking at routes graded 5.4 - 5.15a that were not a Top rope ascent and boulders graded V0 - V16 completed by climbers from the USA.
+For the data, I'm only looking at routes graded 5.4 - 5.15a that were not a toprope ascent and boulders graded V0 - V16 completed by climbers from the USA.
 
 I have two ultimate goals:
 1. Model the grade of a route/boulder.
@@ -20,18 +20,18 @@ I have two ultimate goals:
 
 ### Data Cleaning
 
-This data comes from the site 8a.nu, where climbers can keep a log of which boulders and routes they have completed and when. The data came in the form of a sqlite database with 4 different tables: ascents, grades, methods and users. I converted the SQL tables to CSVs and then imported each to a `pandas` dataframe using the `import.py` script. The `clean_data.py`was used to clean the final `pandas` dataframe for use in EDA and modeling.
+This data comes from the site 8a.nu, where climbers can keep a log of which boulders and routes they have completed and when. The data came in the form of a SQLite database with 4 different tables: ascents, grades, methods and users. I converted the SQL tables to CSVs and then imported each to a `pandas` dataframe using the `import.py` script. The `clean_data.py`was used to clean the final `pandas` dataframe for use in EDA and modeling.
 
 The importing and cleaning steps included:
 * Merging the four dataframes into one.
 * Removing users born outside of the United States.
 * Dropping any rows with missing values in the birth, height, weight, usa_routes and usa_boulders columns.
-* Removing deactivated users, users without a start date, route grades under 5.4, ascents labeled as Toprope.
+* Removing deactivated users, users without a start date, route grades under 5.4, ascents labeled as 'Toprope'.
 * Dropping unwanted columns.
 * Converting height and weight to inches and lbs, respectively.
 * Converting birth and ascent_date to datetime format, and adding current_age and ascent_age columns.
 * Adding a time_to_send column.
-* Combining sponsor1, sponsor2, and sponsor3 into one sponsored columns with values 0 (not sponsored), 1 (sponsored).
+* Combining sponsor1, sponsor2, and sponsor3 into one 'sponsored' column with values 0 (not sponsored), 1 (sponsored).
 * Splitting the dataframe into two: one for routes and one for boulders.
 * Converting boulder grades and route grades into numbers instead of objects.
   * I removed the V from the boulder grades to convert to integers 0 -16. For routes, I replaced the a,b,c,d in route grades with 1,2,3,4 (i.e. 5.11a = 5.111) and added a 0 if the grade was under 5.10 (i.e. 5.6 = 5.06).
@@ -96,7 +96,7 @@ Similarly, I dropped these columns before modeling the data to predict how hard 
 
 I chose to use Ridge and Lasso to fit a model to my data using the sklearn's `RidgeCV` and `LassoCV` with alphas = np.logspace(-2,4,num=250) and cv=10. I first split my data into training and testing with a test size = 0.25, then standardized the training data, employed either `RidgeCV` or `LassoCV`, and compared the R2 scores.
 
-Using the model with the best R2 score (Ridge), I fit a Ridge model with the optimal alpha from my training sets to the unseen data and plotted the predicted values vs. the true values.
+Using the model with the best R2 score (Ridge), I fit a Ridge model with the optimal alpha to the unseen data and plotted the predicted values vs. the true values.
 
 <img src='images/ridge_model_boulder_final.png'>
 
@@ -133,7 +133,7 @@ I used the lasso models to look at which coefficients zeroed out to see which fe
 
 ### Improving the Grade Model?
 
-Since the model for all grades was not fitting well, I decided to see if restricting my data to only boulder grades V5 and above and route grades 5.11a and above would help improve the model.
+Since the model for the grades was not fitting well, I decided to see if restricting my data to only boulder grades V5 and above and route grades 5.11a and above would help improve the model.
 
 <img src='images/ridge_model_boulder_restrict.png'>
 
@@ -181,7 +181,7 @@ Final standardized RMSE: 1.0256
 
 ### Results - Why are these models not performing well?
 
-For the difficulty of a climb model, I believe this model is not performing well due to the nature of the data. The highest influencer of the model is time it took a user to do the climb, but just because it took a user years to send a V4, say, that doesn't tell us much about how hard the boulder actually is (the user may not have tried that boulder before, he/she could have been warming up, etc.) In order to improve the model, we would need more data about the actual climbs, like the kind of holds on the climb (crimps, slopers, jugs, etc.) or the type of rock.
+For the difficulty of a climb model, I believe this model is not performing well due to the nature of the data. The highest influencer of the model is time it took a user to do the climb, but just because it took a user years to send a certain grade, that doesn't necessarily tell us how hard the climb actually is (the user may not have tried that boulder before, he/she could have been warming up, etc.) In order to improve the model, we would need more data about the actual climbs, like the kind of holds on the climb (crimps, slopers, jugs, etc.) or the type of rock.
 
 For the climbing abiltiy in 2017 model, due to the number of reported ascents in 2017, the data used to train/test was cut down  from 129,348 rows to < 7200 rows for boulders and from 115,391 rows to < 6500 for routes. The models shown were from only one sample of the total data for the years prior to 2017, so the model is heavily dependent on which rows were randomly chosen. In order to improve the model, I would need to fit the model to many samples and choose the one that performed the best.
 
