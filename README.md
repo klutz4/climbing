@@ -96,7 +96,7 @@ Similarly, I dropped these columns before modeling the data to predict how hard 
 
 I chose to use Ridge and Lasso to fit a model to my data using the sklearn's `RidgeCV` and `LassoCV` with alphas = np.logspace(-2,4,num=250) and cv=10. I first split my data into training and testing with a test size = 0.25, then standardized the training data, employed either `RidgeCV` or `LassoCV`, and compared the R2 scores.
 
-Using the model with the best R2 score (Ridge), I fit a Ridge model with the optimal alpha to the unseen data and plotted the predicted values vs. the true values.
+Using the model with the best R2 score (Ridge), I applied a Ridge model with the optimal alpha to the unseen data and plotted the predicted values vs. the true values.
 
 <img src='images/ridge_model_boulder_final.png'>
 
